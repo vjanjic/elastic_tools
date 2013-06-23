@@ -7,12 +7,12 @@
 
 #ifndef OCCUPANCYLIMITS_HPP_
 #define OCCUPANCYLIMITS_HPP_
-#include "OccupancyUtils.hpp"
+#include "OccupancyUtils.h"
+#include <cuda_runtime.h>
 
 
 
-
-size_t getRegisterLimit(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps, size_t blockSize) {
+inline  size_t getRegisterLimit(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps, size_t blockSize) {
 	/*
 	 * Now we need to calculate the limits due to register pressure
 	 */
@@ -77,7 +77,7 @@ size_t getRegisterLimit(const cudaDeviceProp &deviceProps, const cudaFuncAttribu
 
 }
 
-size_t getSharedMemLimit(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps) {
+inline   size_t getSharedMemLimit(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps) {
 
 	/*
 	 * Now we need to consider how many blocks can we really have active due to the limit of our shared memory that is requested.
@@ -97,7 +97,7 @@ size_t getSharedMemLimit(const cudaDeviceProp &deviceProps, const cudaFuncAttrib
 	return maxBlocksSMLimit;
 }
 
-size_t getHardwareLimit(const cudaDeviceProp &deviceProps, size_t blockSize) {
+inline  size_t getHardwareLimit(const cudaDeviceProp &deviceProps, size_t blockSize) {
 	/*
 	 * First we start by examining the actual hardware limits
 	 * of the GPU with respect to maximum active blocks of

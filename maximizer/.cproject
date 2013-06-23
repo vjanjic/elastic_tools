@@ -48,10 +48,10 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="com.nvidia.cuda.ide.configuration.debug.187919842.1918144036" name="ElasticDummy.h" rcbsApplicability="disable" resourcePath="src/dummy_elastic/ElasticDummy.h" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="occupancy_tools\|occupancy_tools|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="occupancy_tools" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/occupancy_tools"/>
+						<entry excluding="occupancy_tools\|dummy_elastic|elastic_kernel|cudaCode|src|occupancy_tools|misc" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="elastic_spmv|misc/saxpy.cu|occupancy_tools|misc" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -106,9 +106,13 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="occupancy_tools\|occupancy_tools|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="occupancy_tools" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/occupancy_tools"/>
+						<entry excluding="cudaCode|misc|dummy_elastic|elastic_kernel|occupancy_tools\|occupancy_tools|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="misc|dummy_elastic|elastic_spmv|elastic_kernel|occupancy_tools" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="cudaCode" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/dummy_elastic"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/dummy_elastic/cudaCode"/>
+						<entry excluding="occupancy_tools" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/elastic_kernel"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/elastic_kernel/occupancy_tools"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/misc"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -137,5 +141,12 @@
 		</scannerConfigBuildInfo>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/maximizer"/>
+		</configuration>
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/maximizer"/>
+		</configuration>
+	</storageModule>
 </cproject>

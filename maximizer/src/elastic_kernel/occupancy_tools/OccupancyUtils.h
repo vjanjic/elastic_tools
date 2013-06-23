@@ -7,32 +7,35 @@
 
 #ifndef OCCUPANCYUTILS_HPP_
 #define OCCUPANCYUTILS_HPP_
+#pragma once
+#include <cuda_runtime.h>
 
-inline __host__
+
+inline
 size_t getWarpAllocationGranularity(const cudaDeviceProp &properties)
 {
   return (properties.major <= 1) ? 2 : 1;
 }
 
-inline __host__ size_t min2(size_t x, size_t y) {
+inline  size_t min2(size_t x, size_t y) {
 
 	return (x < y) ? x : y;
 }
 
-inline __host__ size_t min3(size_t x, size_t y, size_t z) {
+inline  size_t min3(size_t x, size_t y, size_t z) {
 	return min2(z, min2(x, y));
 }
 
-inline __host__ int ceilTo(int x, int y) {
+inline  int ceilTo(int x, int y) {
 	int timesYRounded = (x + (y - 1)) / y;
 	return y * timesYRounded;
 }
 
-inline __host__ int floorTo(int x, int y) {
+inline  int floorTo(int x, int y) {
 	return y * (x / y);
 }
 
-inline __host__ size_t getsharedMemoryGranularity(const cudaDeviceProp &devProps) {
+inline  size_t getsharedMemoryGranularity(const cudaDeviceProp &devProps) {
 
 	/*
 	 * according to the architecture shared memory is allocted
@@ -52,17 +55,17 @@ inline __host__ size_t getsharedMemoryGranularity(const cudaDeviceProp &devProps
 }
 
 // number of "sides" into which the multiprocessor is partitioned
-inline __host__ size_t getNumWarpSchedulers(const cudaDeviceProp &devProps) {
+inline  size_t getNumWarpSchedulers(const cudaDeviceProp &devProps) {
 	return (devProps.major < 3) ? devProps.major : 4;
 
 }
 
-inline __host__ size_t getMaxSMBlocks(const cudaDeviceProp &devProps) {
+inline  size_t getMaxSMBlocks(const cudaDeviceProp &devProps) {
 	return (devProps.major > 2) ? 16 : 8;
 }
 
 // granularity of register allocation
-inline __host__ size_t getRegisterAllocationGranularity(const cudaDeviceProp &devProps) {
+inline  size_t getRegisterAllocationGranularity(const cudaDeviceProp &devProps) {
 	switch (devProps.major) {
 	case 1:
 		return (devProps.minor <= 1) ? 256 : 512;
@@ -77,7 +80,7 @@ inline __host__ size_t getRegisterAllocationGranularity(const cudaDeviceProp &de
 	}
 }
 
-size_t getSharedMemNeeded(const cudaFuncAttributes &kernelProps, const cudaDeviceProp &deviceProps) {
+inline size_t getSharedMemNeeded(const cudaFuncAttributes &kernelProps, const cudaDeviceProp &deviceProps) {
 
 	// first we need to get the exact number of bytes statically allocated by the kernel (per block..)
 	size_t sharedMemoryNeeded = kernelProps.sharedSizeBytes;
