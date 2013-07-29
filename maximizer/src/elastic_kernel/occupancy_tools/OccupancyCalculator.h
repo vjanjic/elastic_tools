@@ -11,15 +11,22 @@
 #include "OccupancyLimits.h"
 #include <cuda_runtime.h>
 #include <iostream>
-inline  size_t getMaxResidentBlocksPerSM(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps, size_t blockSize) {
+#include <cmath>
+#include "../AbstractElasticKernel.hpp"
+
+// WORKS FINE
+inline size_t getMaxResidentBlocksPerSM(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps, size_t blockSize) {
 
 	size_t hardwareLimit = getHardwareLimit(deviceProps, blockSize);
 	size_t sMemLimit = getSharedMemLimit(deviceProps, kernelProps);
 	size_t registerLimit = getRegisterLimit(deviceProps, kernelProps, blockSize);
 
+	//std::cout << hardwareLimit << " " << sMemLimit << " " << registerLimit << std::endl;
+
 	return min3(hardwareLimit, sMemLimit, registerLimit);
 }
 
+// WORKS FINE
 inline size_t getNumRegistersPerBlock(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps, size_t blockSize) {
 
 	size_t numerWarpsNeeded = (blockSize + (deviceProps.warpSize - 1)) / deviceProps.warpSize; // we need to devide and round UP to warpsize
@@ -28,65 +35,91 @@ inline size_t getNumRegistersPerBlock(const cudaDeviceProp &deviceProps, const c
 	return kernelProps.numRegs * deviceProps.warpSize * numerWarpsNeeded;
 }
 
+//WORKS FINE
 inline BlockUsage getBlockUsageStats(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps, size_t blockSize) {
 
 	BlockUsage usage;
-	usage.numThreads = blockSize;
-	usage.blocksPerSM = getMaxResidentBlocksPerSM(deviceProps, kernelProps, blockSize);
-	usage.numRegisters = getNumRegistersPerBlock(deviceProps, kernelProps, blockSize);
-	usage.sharedMemory = getSharedMemNeeded(kernelProps, deviceProps);
+	size_t numThreads = blockSize;
+	size_t blocksPerSM = getMaxResidentBlocksPerSM(deviceProps, kernelProps, blockSize);
+	size_t numRegisters = getNumRegistersPerBlock(deviceProps, kernelProps, blockSize);
+	size_t sharedMemory = getSharedMemNeeded(kernelProps, deviceProps);
 
-	return usage;
+	return BlockUsage(sharedMemory, numThreads, numRegisters, blocksPerSM);
 }
 
-inline void reduceBlockToFit(size_t usage, size_t limit, PhysicalConfiguration &configuration) {
-	size_t currentUsage = configuration.blocksPerGrid * usage;
+inline void reduceBlocksToFitOnGPU(size_t usagePerBlock, size_t limitPerGPU, LaunchParameters &phyParams) {
+	// calcualte how much is the usage for the whole card...
 
-	if (currentUsage > limit) {
+	size_t currentUsage = phyParams.getBlocksPerGrid() * usagePerBlock;
+	//std::cout << "USAGE per block" << usagePerBlock << std::endl;
 
-		int deficit = currentUsage - limit;
-		int decrement = (deficit / usage);
-		std::cout << "Decrement : "<< decrement << std::endl;
+	//std::cout << "USAGE " << currentUsage << std::endl;
+	//std::cout << "LIMIT " << limitPerGPU << std::endl;
 
-		configuration.blocksPerGrid = configuration.blocksPerGrid - decrement;
+	if (currentUsage > limitPerGPU) {
+		// if we exceed the limit.. we need to decrement
+
+		int deficit = currentUsage - limitPerGPU; //  calculatye the total deficit
+		//std::cout << "Deficit " << deficit << std::endl;
+
+		size_t decrement = ceil((double) deficit / usagePerBlock); // calcualte how many blocks we need to trim in order to fit
+
+		size_t decreasedBlocks = phyParams.getBlocksPerGrid() - decrement;
+
+		phyParams.setBlocksPerGrid(decreasedBlocks);
 	}
 }
 
-inline PhysicalConfiguration limitUsage(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps, blockParams_logical blkL, gridParams_logical grdL,
-		KernelLimits limits) {
+inline LaunchParameters limitUsage(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps, LogicalParameters lParams, KernelLimits limits) {
+	//std::cout << "REGS " << kernelProps.numRegs << std::endl;
+	// we get the occupancy information for the particualr block
+	BlockUsage usage = getBlockUsageStats(deviceProps, kernelProps, lParams.getNumThreadsPerBlock());
+	std::cout << usage << std::endl;
+	// we calcualte the maximum number of resident blocks of this size on the GPU
+	size_t maximumResidentBLocks = usage.getNumBlocksPerSM() * deviceProps.multiProcessorCount;
 
-	//calcualte blocksize and number of blocks per grid
-	size_t blockSize = blkL.blkDim_X * blkL.blkDim_Y * blkL.blkDim_Z;
-	size_t blocks = grdL.grdDim_X * grdL.grdDim_Y;
+	// constructing physical configuration... based on calcualted number of blocks :)
+	size_t blocksPhysical = min3(lParams.getNumberBlocks(), maximumResidentBLocks, limits.getNumBlocks());
+	size_t threadsPhysical = lParams.getNumThreadsPerBlock();
+	LaunchParameters result = LaunchParameters(threadsPhysical, blocksPhysical);
 
-	std::cout<< blockSize << " " << blocks << std::endl;
+	// now we need to further limit this physical  configuration, which of course is pain
 
-	BlockUsage usage = getBlockUsageStats(deviceProps, kernelProps, blockSize);
-
-	printUsage(usage);
-
-	size_t maximumResidentBLocks = usage.blocksPerSM * deviceProps.multiProcessorCount;
-	size_t blocksFinal = blocks;
-	size_t threadsFinal = blockSize;
-
-	blocksFinal = min3(blocks, maximumResidentBLocks, limits.blocks);
-
-	//change threads
-/*	int incrementThreads = ((blocks * blockSize) - (blocksFinal * blockSize)) / blocksFinal;
-	threadsFinal = threadsFinal + incrementThreads;*/
-
-	PhysicalConfiguration result;
-	result.threadsPerBlock = threadsFinal;
-	result.blocksPerGrid = blocksFinal;
-
-	printHysicalConfig(result);
-	reduceBlockToFit(usage.sharedMemory, limits.sharedMem, result);
-	std::cout << "Thread usage: " << usage.numThreads << " Limit on threads: " << limits.threads << std::endl;
-	reduceBlockToFit(usage.numThreads, limits.threads, result);
-	reduceBlockToFit(usage.numRegisters, limits.registers, result);
-	printHysicalConfig(result);
+	reduceBlocksToFitOnGPU(usage.getSharedMem(), limits.getSharedMem(), result);
+	reduceBlocksToFitOnGPU(usage.getNumThreads(), limits.getNumThreads(), result);
+	reduceBlocksToFitOnGPU(usage.getNumRegisters(), limits.getNumRegisters(), result);
 
 	return result;
+}
+
+inline size_t getOptimalBlockSize(AbstractElasticKernel* kernel) {
+	size_t max_occupancy = kernel->getGPUProperties().maxThreadsPerMultiProcessor;
+	size_t largestThrNum = min2(kernel->getKernelProperties().maxThreadsPerBlock, kernel->getGPUProperties().maxThreadsPerMultiProcessor);
+
+	size_t threadGranularity = kernel->getGPUProperties().warpSize;
+
+	size_t maxBLockSize = 0;
+	size_t highestOcc = 0;
+
+	for (size_t blocksize = largestThrNum; blocksize != 0; blocksize -= threadGranularity) {
+
+		size_t maxBlocksPerSm = getMaxResidentBlocksPerSM(kernel->getGPUProperties(), kernel->getKernelProperties(), blocksize);
+		size_t occupancy = blocksize * maxBlocksPerSm;
+
+		std::cout << "Trying blocksize " <<   blocksize << std::endl;
+
+		if (occupancy > highestOcc) {
+			maxBLockSize = blocksize;
+			highestOcc = occupancy;
+		}
+
+		// early out, can't do better
+		if (highestOcc == max_occupancy)
+			break;
+		//printf("Blocksize %d\n", blocksize);
+	}
+	return maxBLockSize;
+
 }
 
 #endif /* OCCUPANCYCALCULATOR_HPP_ */

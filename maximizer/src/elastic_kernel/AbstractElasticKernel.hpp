@@ -8,22 +8,34 @@
 #ifndef ABSTRACTELASTICKERNEL_HPP_
 #define ABSTRACTELASTICKERNEL_HPP_
 
-#include "ConfigurationParameters.h"
+#include  "../elastic_kernel/occupancy_tools/OccupancyData.h"
+#include "LaunchParameters.hpp"
 #include "stdint.h"
-
+#include <iostream>
+#include <string.h>
 class AbstractElasticKernel {
 
 protected:
-	gridParams_logical lGrid;
-	blockParams_logical lBlock;
+	LaunchParameters gridConfig;
+	std::string name;
 
 public:
-	AbstractElasticKernel(gridParams_logical gridParL, blockParams_logical blockParL);
-	AbstractElasticKernel(size_t gdx, size_t gdy, size_t blx, size_t bly, size_t blz);
-	virtual ~AbstractElasticKernel();
+	AbstractElasticKernel();
 
+	AbstractElasticKernel(const LaunchParameters& gridConfig,std::string name);
+
+	virtual ~AbstractElasticKernel();
 	virtual void initKernel() = 0;
-	virtual void runKernel() = 0;
+	virtual void runKernel(cudaStream_t &streamToRunIn) = 0;
+	virtual cudaFuncAttributes getKernelProperties() = 0;
+	virtual void freeResources() = 0;
+
+	void setLaunchlParams(const LaunchParameters& gridConfig);
+
+	LaunchParameters getLaunchParams();
+
+	friend std::ostream &operator<<(std::ostream &output, const AbstractElasticKernel &kernel);
+
 
 };
 

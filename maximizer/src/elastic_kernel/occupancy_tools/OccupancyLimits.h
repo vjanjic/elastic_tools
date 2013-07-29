@@ -12,7 +12,7 @@
 
 
 
-inline  size_t getRegisterLimit(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps, size_t blockSize) {
+inline  size_t getRegisterLimit( const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps, size_t blockSize) {
 	/*
 	 * Now we need to calculate the limits due to register pressure
 	 */
@@ -26,7 +26,6 @@ inline  size_t getRegisterLimit(const cudaDeviceProp &deviceProps, const cudaFun
 	 * This is done by rounded devision to the number of threads per warp (which is the warp size)
 	 * After that we check the compute capability.
 	 */
-
 	size_t numerWarpsNeeded = (blockSize + (deviceProps.warpSize - 1)) / deviceProps.warpSize; // we need to devide and round UP to warpsize
 	/*
 	 * here we CEIL up to 1 or 2, depending on the compute capability of the GPU
@@ -51,6 +50,7 @@ inline  size_t getRegisterLimit(const cudaDeviceProp &deviceProps, const cudaFun
 			 *we can fit in.
 			 *
 			 */
+
 			maxBlocksRegisterLimit = deviceProps.regsPerBlock / registersNeeded;
 		} else {
 			// if we do not need any registers, simply set the max to the max of blocks per SM
@@ -72,7 +72,6 @@ inline  size_t getRegisterLimit(const cudaDeviceProp &deviceProps, const cudaFun
 			maxBlocksRegisterLimit = getMaxSMBlocks(deviceProps);
 		}
 	}
-
 	return maxBlocksRegisterLimit;
 
 }
@@ -107,6 +106,7 @@ inline  size_t getHardwareLimit(const cudaDeviceProp &deviceProps, size_t blockS
 	// we first need the maximum number of resident threads per SM
 	size_t maximumThreadsPerMultiprocessor = deviceProps.maxThreadsPerMultiProcessor;
 
+
 	/*we also determine the maximum resident blocks per SM. On
 	 *architectures that are newer than 2.0 CC, we have 16 maximum
 	 *architectures  resident blocks per SM, otherwise 8
@@ -117,6 +117,7 @@ inline  size_t getHardwareLimit(const cudaDeviceProp &deviceProps, size_t blockS
 	 * now we simply need to obtain the limit active blocks per SM with
 	 * respect to those initial hardware considerations
 	 */
+
 
 	size_t threadCountLimit = 0;
 	if (blockSize > deviceProps.maxThreadsPerBlock) {
