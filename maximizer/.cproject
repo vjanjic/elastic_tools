@@ -37,6 +37,7 @@
 								<inputType id="nvcc.compiler.input.c.211168412" superClass="nvcc.compiler.input.c"/>
 							</tool>
 							<tool id="nvcc.linker.base.193659162" name="NVCC Linker" superClass="nvcc.linker.base">
+								<option id="nvcc.linker.option.libs.1174003535" name="Libraries (-l)" superClass="nvcc.linker.option.libs" valueType="libs"/>
 								<inputType id="nvcc.linker.input.1675884871" superClass="nvcc.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -48,8 +49,8 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="com.nvidia.cuda.ide.configuration.debug.187919842.304056580" name="cuda_launch_config.hpp" rcbsApplicability="disable" resourcePath="src/misc/cuda_launch_config.hpp" toolsToInvoke=""/>
 					<fileInfo id="com.nvidia.cuda.ide.configuration.debug.187919842.1497488050" name="Maximizer.hpp" rcbsApplicability="disable" resourcePath="src/misc/Maximizer.hpp" toolsToInvoke=""/>
+					<fileInfo id="com.nvidia.cuda.ide.configuration.debug.187919842.304056580" name="cuda_launch_config.hpp" rcbsApplicability="disable" resourcePath="src/misc/cuda_launch_config.hpp" toolsToInvoke=""/>
 					<fileInfo id="com.nvidia.cuda.ide.configuration.debug.187919842.2114560927" name="scratchpad.hpp" rcbsApplicability="disable" resourcePath="src/misc/scratchpad.hpp" toolsToInvoke=""/>
 					<fileInfo id="com.nvidia.cuda.ide.configuration.debug.187919842.1392573852" name="Elasticizer.hpp" rcbsApplicability="disable" resourcePath="src/misc/Elasticizer.hpp" toolsToInvoke=""/>
 					<fileInfo id="com.nvidia.cuda.ide.configuration.debug.187919842.1644937722" name="KernelUsageData.hpp" rcbsApplicability="disable" resourcePath="src/misc/KernelUsageData.hpp" toolsToInvoke=""/>
@@ -64,6 +65,7 @@
 					<sass major="2" minor="0"/>
 					<ptx major="2" minor="0"/>
 				</executable>
+				<editor-arch major="2" minor="0"/>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 		</cconfiguration>
