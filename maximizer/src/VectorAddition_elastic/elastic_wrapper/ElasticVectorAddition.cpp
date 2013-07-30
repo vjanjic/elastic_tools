@@ -6,7 +6,7 @@
  */
 
 #include "ElasticVectorAddition.h"
-#define VEC_LEN 500000;
+#define VEC_LEN 10000000;
 
 
 ElasticVectorAddition::ElasticVectorAddition() :

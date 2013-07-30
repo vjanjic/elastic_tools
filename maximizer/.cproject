@@ -55,7 +55,7 @@
 					<fileInfo id="com.nvidia.cuda.ide.configuration.debug.187919842.1392573852" name="Elasticizer.hpp" rcbsApplicability="disable" resourcePath="src/misc/Elasticizer.hpp" toolsToInvoke=""/>
 					<fileInfo id="com.nvidia.cuda.ide.configuration.debug.187919842.1644937722" name="KernelUsageData.hpp" rcbsApplicability="disable" resourcePath="src/misc/KernelUsageData.hpp" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="BlackScholes_elastic|elastic_launcher|ScalarProduct_elastic|occupancy_tools\|dummy_elastic|elastic_wrapper|elastic_kernel|src|occupancy_tools|misc|Chunking_elastic|wrapper_elastic|GPU_code|VectorAddition_elastic|cudaCode" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="BlackScholes_elastic|elastic_launcher|ScalarProduct_elastic|occupancy_tools\|dummy_elastic|elastic_wrapper|elastic_kernel|src|occupancy_tools|misc|MatrixMultiplication_elastic|Chunking_elastic|wrapper_elastic|GPU_code|VectorAddition_elastic|cudaCode" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry excluding="misc/cuda_launch_config.hpp|elastic_spmv|misc/scratchpad.hpp|misc/Maximizer.hpp|misc/Elasticizer.hpp|misc/saxpy.cu|misc/KernelUsageData.hpp|occupancy_tools" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
@@ -112,13 +112,15 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="VectorAddition_elastic|ScalarProduct_elastic|BlackScholes_elastic|wrapper_elastic|elastic_wrapper|GPU_code|Chunking_elastic|elastic_launcher|cudaCode|misc|dummy_elastic|elastic_kernel|occupancy_tools\|occupancy_tools|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="VectorAddition_elastic|ScalarProduct_elastic|BlackScholes_elastic|Chunking_elastic|elastic_launcher|misc|dummy_elastic|elastic_spmv|elastic_kernel|occupancy_tools" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="MatrixMultiplication_elastic|VectorAddition_elastic|ScalarProduct_elastic|BlackScholes_elastic|wrapper_elastic|elastic_wrapper|GPU_code|Chunking_elastic|elastic_launcher|cudaCode|misc|dummy_elastic|elastic_kernel|occupancy_tools\|occupancy_tools|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="MatrixMultiplication_elastic|VectorAddition_elastic|ScalarProduct_elastic|BlackScholes_elastic|Chunking_elastic|elastic_launcher|misc|dummy_elastic|elastic_spmv|elastic_kernel|occupancy_tools" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 						<entry excluding="elastic_wrapper|GPU_code" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/BlackScholes_elastic"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/BlackScholes_elastic/GPU_code"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/BlackScholes_elastic/elastic_wrapper"/>
 						<entry excluding="wrapper_elastic|elastic_wrapper|GPU_code" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/Chunking_elastic"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/Chunking_elastic/GPU_code"/>
+						<entry excluding="GPU_code" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/MatrixMultiplication_elastic"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/MatrixMultiplication_elastic/GPU_code"/>
 						<entry excluding="elastic_wrapper" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/ScalarProduct_elastic"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/ScalarProduct_elastic/elastic_wrapper"/>
 						<entry excluding="elastic_wrapper|GPU_code" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/VectorAddition_elastic"/>

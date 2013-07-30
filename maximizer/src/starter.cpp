@@ -17,9 +17,13 @@ int main() {
 
 
 	KernelScheduler scheduler;
-	scheduler.addKernel(makeElasticKernel(192,5,CHUNKING,"test"));
-	scheduler.addKernel(makeElasticKernel(192,5,BLACK_SCHOLES,"test3"));
-	scheduler.addKernel(makeElasticKernel(192,10,CHUNKING,"test"));
+	scheduler.addKernel(makeElasticKernel(192,128,CHUNKING,"chunking"));
+	scheduler.addKernel(makeElasticKernel(192,1,BLACK_SCHOLES,"black_scholes"));
+
+	scheduler.addKernel(makeElasticKernel(192,5,VECTOR_ADD,"vector_addition"));
+	scheduler.addKernel(makeElasticKernel(192,5,SCALAR_PRODUCT,"scalar_product"));
+	scheduler.addKernel(makeElasticKernel(32,16,MATRIX_MULT,"matrix_multiplication"));
+
 	scheduler.runKernels();
 
 

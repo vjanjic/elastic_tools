@@ -14,13 +14,14 @@
 #include "../BlackScholes_elastic/elastic_wrapper/ElasticBSPricer.h"
 #include "../ScalarProduct_elastic/elastic_wrapper/ElasticScalarProduct.h"
 #include "../VectorAddition_elastic/elastic_wrapper/ElasticVectorAddition.h"
+#include "../MatrixMultiplication_elastic/elastic_wrapper/ElasticMatrixMultiplication.h"
 #include <boost/shared_ptr.hpp>
 
 
 #include "string.h"
 #include <string>
 enum KernelType {
-	CHUNKING, BLACK_SCHOLES, SCALAR_PRODUCT, VECTOR_ADD
+	CHUNKING, BLACK_SCHOLES, SCALAR_PRODUCT, VECTOR_ADD,MATRIX_MULT
 };
 
 boost::shared_ptr<AbstractElasticKernel> makeElasticKernel(size_t threadsPerBlock, size_t blocksPerGrid, KernelType type, std::string name) {
@@ -41,6 +42,10 @@ boost::shared_ptr<AbstractElasticKernel> makeElasticKernel(size_t threadsPerBloc
 	}
 	if (type == 3) {
 		return boost::shared_ptr<AbstractElasticKernel>(new ElasticVectorAddition(parameters, name));
+
+	}
+	if (type == 4) {
+		return boost::shared_ptr<AbstractElasticKernel>(new ElasticMatrixMultiplication(parameters, name));
 
 	}
 

@@ -25,7 +25,7 @@ private:
 	float *d_OptionYears;
 
 	const static int OPT_N = 40000000;
-	const static int NUM_ITERATIONS = 512;
+	const static int NUM_ITERATIONS = 2048;
 	const  static int OPT_SZ = OPT_N * sizeof(float);
 	const static float RISKFREE = 0.02f;
 	const  static float VOLATILITY = 0.30f;
