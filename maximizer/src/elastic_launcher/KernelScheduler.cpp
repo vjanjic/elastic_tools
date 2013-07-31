@@ -44,6 +44,26 @@ void KernelScheduler::freeResources() {
 	}
 }
 
+size_t KernelScheduler::getFreeGPUMemory(size_t accuracy, size_t safeGuardAmount) {
+	size_t bytesInMB = 1048576;
+	size_t granularity = accuracy;
+	size_t allocated = 0;
+	int *dummy = NULL;
+
+	while (true) {
+
+		cudaError_t err = cudaMalloc((void **) &dummy, 1048576 * granularity);
+		if (err != cudaSuccess) {
+			printf("CUDA error: %s\n", cudaGetErrorString(err));
+			cudaFree(dummy);
+			return allocated;
+		}
+		allocated = allocated + granularity;
+	}
+	// just so it does not complain for non return
+	return allocated - safeGuardAmount;
+}
+
 KernelScheduler::~KernelScheduler() {
 	this->freeResources();
 }

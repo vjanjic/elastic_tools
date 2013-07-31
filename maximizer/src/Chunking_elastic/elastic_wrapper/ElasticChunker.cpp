@@ -60,6 +60,10 @@ void ElasticChunker::runKernel(cudaStream_t& streamToRunIn) {
 			this->results_d, totalNumThreads, workPerThread, 512,streamToRunIn);
 }
 
+size_t ElasticChunker::getMemoryConsumption() {
+	return (sizeof(BYTE) * dataSize) + sizeof(rabinData) + (getSizeOfBitArray(dataSize) * 32);
+}
+
 void ElasticChunker::freeResources() {
 	freeCudaResource(this->dataBuffer_d);
 	freeCudaResource(this->rabinData_d);

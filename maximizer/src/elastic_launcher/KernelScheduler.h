@@ -20,10 +20,12 @@ private:
 
 	void initKernels();
 	void freeResources();
+	size_t getFreeGPUMemory(size_t accuracy, size_t safeGuardAmount);
 public:
 	KernelScheduler();
 	void addKernel(boost::shared_ptr<AbstractElasticKernel> kernel);
 	void runKernels();
+
 	virtual ~KernelScheduler();
 };
 

@@ -84,6 +84,10 @@ void ElasticBSPricer::freeResources() {
 	CUDA_CHECK_RETURN(cudaFree(d_CallResult));
 }
 
+size_t ElasticBSPricer::getMemoryConsumption() {
+	return OPT_SZ * 5;
+}
+
 ElasticBSPricer::~ElasticBSPricer() {
 	// TODO Auto-generated destructor stub
 }

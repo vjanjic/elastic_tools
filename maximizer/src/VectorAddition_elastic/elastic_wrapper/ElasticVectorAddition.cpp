@@ -8,17 +8,18 @@
 #include "ElasticVectorAddition.h"
 #define VEC_LEN 10000000;
 
-
 ElasticVectorAddition::ElasticVectorAddition() :
 		AbstractElasticKernel() {
-	this->numElems = VEC_LEN;
+	this->numElems = VEC_LEN
+	;
 	// TODO Auto-generated constructor stub
 
 }
 
 ElasticVectorAddition::ElasticVectorAddition(LaunchParameters& launchConfig, std::string name) :
 		AbstractElasticKernel(launchConfig, name) {
-	this->numElems = VEC_LEN;
+	this->numElems = VEC_LEN
+	;
 
 }
 
@@ -57,6 +58,11 @@ cudaFuncAttributes ElasticVectorAddition::getKernelProperties() {
 void ElasticVectorAddition::freeResources() {
 	CUDA_CHECK_RETURN(cudaFree(this->a));
 	CUDA_CHECK_RETURN(cudaFree(this->b));
+
+}
+
+size_t ElasticVectorAddition::getMemoryConsumption() {
+	return (sizeof(int) * this->numElems) * 2;
 
 }
 

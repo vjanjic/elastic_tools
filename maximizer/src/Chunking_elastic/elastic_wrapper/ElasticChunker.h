@@ -29,6 +29,7 @@ public:
 	void initKernel();
 	void runKernel(cudaStream_t &streamToRunIn);
 	cudaFuncAttributes getKernelProperties();
+	size_t getMemoryConsumption();
 	void freeResources();
 
 };

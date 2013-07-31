@@ -66,6 +66,10 @@ float ElasticScalarProduct::RandFloat(float low, float high) {
 
 }
 
+size_t ElasticScalarProduct::getMemoryConsumption() {
+	return (DATA_SZ * 2) + RESULT_SZ;
+}
+
 ElasticScalarProduct::~ElasticScalarProduct() {
 	// TODO Auto-generated destructor stub
 }

@@ -11,22 +11,19 @@
 #include  "elastic_launcher/ElasticKernelMaker.h"
 #include "elastic_launcher/KernelScheduler.h"
 #include "stdio.h"
+#include "cuda_runtime.h"
+
+
 
 int main() {
 
-
-
 	KernelScheduler scheduler;
-	scheduler.addKernel(makeElasticKernel(192,128,CHUNKING,"chunking"));
-	scheduler.addKernel(makeElasticKernel(192,1,BLACK_SCHOLES,"black_scholes"));
-
-	scheduler.addKernel(makeElasticKernel(192,5,VECTOR_ADD,"vector_addition"));
-	scheduler.addKernel(makeElasticKernel(192,5,SCALAR_PRODUCT,"scalar_product"));
-	scheduler.addKernel(makeElasticKernel(32,16,MATRIX_MULT,"matrix_multiplication"));
-
+	scheduler.addKernel(makeElasticKernel(128, 32, CHUNKING, "chunking"));
+	scheduler.addKernel(makeElasticKernel(128, 32, VECTOR_ADD, "vector_addition"));
+	scheduler.addKernel(makeElasticKernel(128, 32, BLACK_SCHOLES, "black_scholes"));
+	scheduler.addKernel(makeElasticKernel(128, 128, SCALAR_PRODUCT, "scalar_product"));
+	scheduler.addKernel(makeElasticKernel(128, 64, MATRIX_MULT, "matrix_multiplication"));
 	scheduler.runKernels();
-
-
 
 
 }

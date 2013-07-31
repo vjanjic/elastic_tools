@@ -50,6 +50,11 @@ void ElasticMatrixMultiplication::freeResources() {
 	CUDA_CHECK_RETURN(cudaFree(d_P));
 }
 
+size_t ElasticMatrixMultiplication::getMemoryConsumption() {
+	return matrixWidth * matrixWidth * sizeof(float) * 3;
+
+}
+
 ElasticMatrixMultiplication::~ElasticMatrixMultiplication() {
 	// TODO Auto-generated destructor stub
 }

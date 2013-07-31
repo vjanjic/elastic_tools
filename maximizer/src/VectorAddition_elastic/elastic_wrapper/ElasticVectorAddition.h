@@ -26,7 +26,7 @@ public:
 	void runKernel(cudaStream_t &streamToRunIn);
 	cudaFuncAttributes getKernelProperties();
 	void freeResources();
-
+	size_t getMemoryConsumption();
 	virtual ~ElasticVectorAddition();
 };
 
