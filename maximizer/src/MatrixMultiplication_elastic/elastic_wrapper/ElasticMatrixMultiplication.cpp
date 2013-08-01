@@ -9,21 +9,23 @@
 
 ElasticMatrixMultiplication::ElasticMatrixMultiplication() :
 		AbstractElasticKernel() {
-	// TODO Auto-generated constructor stub
-
+	this->matrixWidth = 4096;
+	this->memConsumption = matrixWidth * matrixWidth * sizeof(float) * 3;
 }
 
 ElasticMatrixMultiplication::ElasticMatrixMultiplication(LaunchParameters& launchConfig, std::string name) :
 		AbstractElasticKernel(launchConfig, name) {
+	this->matrixWidth = 4096;
+	this->memConsumption = matrixWidth * matrixWidth * sizeof(float) * 3;
 
 }
 
 void ElasticMatrixMultiplication::initKernel() {
-	this->matrixWidth = 4096;
+
 	int matrix_size = matrixWidth * matrixWidth * sizeof(float);
 
 	float* M = (float*) malloc(sizeof(float) * matrix_size);
-	float* N = (float*) malloc(sizeof(float) *matrix_size);
+	float* N = (float*) malloc(sizeof(float) * matrix_size);
 	CUDA_CHECK_RETURN(cudaMalloc(&d_M, matrix_size));
 	CUDA_CHECK_RETURN(cudaMemcpy(d_M, M, matrix_size, cudaMemcpyHostToDevice));
 	CUDA_CHECK_RETURN(cudaMalloc(&d_N, matrix_size));
@@ -51,7 +53,7 @@ void ElasticMatrixMultiplication::freeResources() {
 }
 
 size_t ElasticMatrixMultiplication::getMemoryConsumption() {
-	return matrixWidth * matrixWidth * sizeof(float) * 3;
+	return this->memConsumption;
 
 }
 

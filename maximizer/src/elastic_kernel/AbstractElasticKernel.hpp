@@ -18,6 +18,7 @@ class AbstractElasticKernel {
 protected:
 	LaunchParameters gridConfig;
 	std::string name;
+	size_t memConsumption;
 
 public:
 	AbstractElasticKernel();

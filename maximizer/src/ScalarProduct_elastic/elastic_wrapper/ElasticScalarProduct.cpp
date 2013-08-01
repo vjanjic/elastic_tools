@@ -9,12 +9,15 @@
 
 ElasticScalarProduct::ElasticScalarProduct() :
 		AbstractElasticKernel() {
+	this->memConsumption = (DATA_SZ * 2) + RESULT_SZ;
 	// TODO Auto-generated constructor stub
 
 }
 
 ElasticScalarProduct::ElasticScalarProduct(LaunchParameters& launchConfig, std::string name) :
 		AbstractElasticKernel(launchConfig, name) {
+	this->memConsumption = (DATA_SZ * 2) + RESULT_SZ;
+
 }
 
 void ElasticScalarProduct::initKernel() {
@@ -41,7 +44,7 @@ void ElasticScalarProduct::initKernel() {
 }
 
 void ElasticScalarProduct::runKernel(cudaStream_t& streamToRunIn) {
-	startSPKernel(gridConfig.getThreadsPerBlock(),gridConfig.getBlocksPerGrid(),d_C,d_A,d_B,VECTOR_N,ELEMENT_N,streamToRunIn);
+	startSPKernel(gridConfig.getThreadsPerBlock(), gridConfig.getBlocksPerGrid(), d_C, d_A, d_B, VECTOR_N, ELEMENT_N, streamToRunIn);
 }
 
 cudaFuncAttributes ElasticScalarProduct::getKernelProperties() {
@@ -67,7 +70,7 @@ float ElasticScalarProduct::RandFloat(float low, float high) {
 }
 
 size_t ElasticScalarProduct::getMemoryConsumption() {
-	return (DATA_SZ * 2) + RESULT_SZ;
+	return this->memConsumption;
 }
 
 ElasticScalarProduct::~ElasticScalarProduct() {

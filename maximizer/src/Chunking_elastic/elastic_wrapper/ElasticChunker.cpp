@@ -9,11 +9,13 @@
 
 ElasticChunker::ElasticChunker() :
 		AbstractElasticKernel(), dataSize(67108864), rabinData_d(0), dataBuffer_d(0), results_d(0) {
-
+this->memConsumption = (sizeof(BYTE) * dataSize) + sizeof(rabinData) + (getSizeOfBitArray(dataSize) * 32);
 }
 
 ElasticChunker::ElasticChunker(LaunchParameters &launchConfig, std::string name) :
 		AbstractElasticKernel(launchConfig,name), dataSize(67108864), rabinData_d(0), dataBuffer_d(0), results_d(0) {
+	this->memConsumption = (sizeof(BYTE) * dataSize) + sizeof(rabinData) + (getSizeOfBitArray(dataSize) * 32);
+
 
 }
 
@@ -61,7 +63,7 @@ void ElasticChunker::runKernel(cudaStream_t& streamToRunIn) {
 }
 
 size_t ElasticChunker::getMemoryConsumption() {
-	return (sizeof(BYTE) * dataSize) + sizeof(rabinData) + (getSizeOfBitArray(dataSize) * 32);
+	return this->memConsumption;
 }
 
 void ElasticChunker::freeResources() {

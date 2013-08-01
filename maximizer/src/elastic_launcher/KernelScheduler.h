@@ -12,21 +12,27 @@
 
 #include <boost/shared_ptr.hpp>
 #include "../elastic_kernel/AbstractElasticKernel.hpp"
+#include "KernelExecutionQueue.h"
+
 #include "cuda_runtime.h"
 
 class KernelScheduler {
 private:
-	std::vector<std::pair< boost::shared_ptr<AbstractElasticKernel> , cudaStream_t> > kernelsAndStreams;
+	std::vector<boost::shared_ptr<AbstractElasticKernel> > kernelsToRun;
+	std::vector<KernelExecutionQueue> kernelQueues;
 
-	void initKernels();
-	void freeResources();
-	size_t getFreeGPUMemory(size_t accuracy, size_t safeGuardAmount);
+
 public:
 	KernelScheduler();
 	void addKernel(boost::shared_ptr<AbstractElasticKernel> kernel);
 	void runKernels();
+	void orderKernelsInQueues();
+
 
 	virtual ~KernelScheduler();
+
+	friend std::ostream &operator<< (std::ostream &output, const KernelScheduler &sch);
+
 };
 
 #endif /* KERNELSCHEDULER_H_ */

@@ -18,6 +18,7 @@ private:
 	int* b;
 	int numElems;
 
+
 public:
 	ElasticVectorAddition();
 	ElasticVectorAddition(LaunchParameters &launchConfig, std::string name);

@@ -31,6 +31,6 @@ LaunchParameters AbstractElasticKernel::getLaunchParams() {
 }
 
 std::ostream & operator<<(std::ostream &output, const AbstractElasticKernel &kernel) {
-	output << "[" << kernel.name << "] @ " << kernel.gridConfig;
+	output << "[" << kernel.name << "] @ " << kernel.gridConfig << " [" << kernel.memConsumption << "]";
 	return output;
 }

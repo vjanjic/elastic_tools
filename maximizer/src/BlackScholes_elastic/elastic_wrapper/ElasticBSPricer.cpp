@@ -9,11 +9,13 @@
 
 ElasticBSPricer::ElasticBSPricer() :
 		AbstractElasticKernel() {
+	this->memConsumption = 5* OPT_SZ;
 
 }
 
 ElasticBSPricer::ElasticBSPricer(LaunchParameters &launchConfig, std::string name) :
 		AbstractElasticKernel(launchConfig, name) {
+	this->memConsumption = 5* OPT_SZ;
 }
 
 void ElasticBSPricer::initKernel() {
@@ -85,7 +87,7 @@ void ElasticBSPricer::freeResources() {
 }
 
 size_t ElasticBSPricer::getMemoryConsumption() {
-	return OPT_SZ * 5;
+	return memConsumption;
 }
 
 ElasticBSPricer::~ElasticBSPricer() {

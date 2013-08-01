@@ -14,6 +14,7 @@
 class ElasticScalarProduct: public AbstractElasticKernel {
 
 private:
+
 	//Total number of input vector pairs; arbitrary
 	const static int VECTOR_N = 256;
 	//Number of elements per vector; arbitrary,
