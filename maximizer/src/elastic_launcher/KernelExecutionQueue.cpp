@@ -37,7 +37,7 @@ size_t KernelExecutionQueue::getFreeGPUMemory(size_t accuracy, size_t safeGuardA
 	 // just so it does not complain for non return
 	 return (allocated - safeGuardAmount) * bytesInMB;*/
 	//printf("%d\n", free);
-	return free - (32*(1 << 20));
+	return free - (64 * (1 << 20));
 }
 
 KernelExecutionQueue::~KernelExecutionQueue() {
@@ -83,6 +83,8 @@ void KernelExecutionQueue::disposeQueue() {
 	this->memoryUsed = 0;
 	this->kernelsAndStreams.begin();
 }
+
+
 
 std::ostream& operator <<(std::ostream& output, const KernelExecutionQueue& q) {
 

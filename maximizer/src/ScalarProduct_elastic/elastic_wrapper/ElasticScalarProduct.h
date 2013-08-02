@@ -39,12 +39,15 @@ private:
 	double sum_delta;
 	double sum_ref;
 	double L1norm;
+	int numElems;
+	int dataSize;
+	int dataN;
 
 	float RandFloat(float low, float high);
 
 public:
 	ElasticScalarProduct();
-	ElasticScalarProduct(LaunchParameters &launchConfig, std::string name);
+	ElasticScalarProduct(LaunchParameters &launchConfig, std::string name, int numElems);
 
 	void initKernel();
 	void runKernel(cudaStream_t &streamToRunIn);

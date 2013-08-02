@@ -13,9 +13,9 @@ ElasticMatrixMultiplication::ElasticMatrixMultiplication() :
 	this->memConsumption = matrixWidth * matrixWidth * sizeof(float) * 3;
 }
 
-ElasticMatrixMultiplication::ElasticMatrixMultiplication(LaunchParameters& launchConfig, std::string name) :
+ElasticMatrixMultiplication::ElasticMatrixMultiplication(LaunchParameters& launchConfig, std::string name, int matrixSize) :
 		AbstractElasticKernel(launchConfig, name) {
-	this->matrixWidth = 4096;
+	this->matrixWidth = matrixSize;
 	this->memConsumption = matrixWidth * matrixWidth * sizeof(float) * 3;
 
 }

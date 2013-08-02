@@ -21,7 +21,7 @@ private:
 
 public:
 	ElasticVectorAddition();
-	ElasticVectorAddition(LaunchParameters &launchConfig, std::string name);
+	ElasticVectorAddition(LaunchParameters &launchConfig, std::string name,int numElems);
 
 	void initKernel();
 	void runKernel(cudaStream_t &streamToRunIn);

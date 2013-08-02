@@ -13,6 +13,14 @@
 #include <iostream>
 #include <cmath>
 #include "../AbstractElasticKernel.hpp"
+#include <boost/shared_ptr.hpp>
+
+
+inline cudaDeviceProp getGPUProperties() {
+	cudaDeviceProp props;
+	cudaGetDeviceProperties(&props, 0);
+	return props;
+}
 
 // WORKS FINE
 inline size_t getMaxResidentBlocksPerSM(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps, size_t blockSize) {
@@ -47,7 +55,7 @@ inline BlockUsage getBlockUsageStats(const cudaDeviceProp &deviceProps, const cu
 	return BlockUsage(sharedMemory, numThreads, numRegisters, blocksPerSM);
 }
 
-inline void reduceBlocksToFitOnGPU(size_t usagePerBlock, size_t limitPerGPU, LaunchParameters &phyParams) {
+/*inline void reduceBlocksToFitOnGPU(size_t usagePerBlock, size_t limitPerGPU, LaunchParameters &phyParams) {
 	// calcualte how much is the usage for the whole card...
 
 	size_t currentUsage = phyParams.getBlocksPerGrid() * usagePerBlock;
@@ -90,23 +98,24 @@ inline LaunchParameters limitUsage(const cudaDeviceProp &deviceProps, const cuda
 	reduceBlocksToFitOnGPU(usage.getNumRegisters(), limits.getNumRegisters(), result);
 
 	return result;
-}
+}*/
 
-inline size_t getOptimalBlockSize(AbstractElasticKernel* kernel) {
-	size_t max_occupancy = kernel->getGPUProperties().maxThreadsPerMultiProcessor;
-	size_t largestThrNum = min2(kernel->getKernelProperties().maxThreadsPerBlock, kernel->getGPUProperties().maxThreadsPerMultiProcessor);
+inline size_t getOptimalBlockSize(boost::shared_ptr<AbstractElasticKernel> kernel) {
+	cudaDeviceProp gpuConfiguration = getGPUProperties();
+	size_t max_occupancy = gpuConfiguration.maxThreadsPerMultiProcessor;
+	size_t largestThrNum = min2(kernel.get()->getKernelProperties().maxThreadsPerBlock, gpuConfiguration.maxThreadsPerMultiProcessor);
 
-	size_t threadGranularity = kernel->getGPUProperties().warpSize;
+	size_t threadGranularity = gpuConfiguration.warpSize;
 
 	size_t maxBLockSize = 0;
 	size_t highestOcc = 0;
 
 	for (size_t blocksize = largestThrNum; blocksize != 0; blocksize -= threadGranularity) {
 
-		size_t maxBlocksPerSm = getMaxResidentBlocksPerSM(kernel->getGPUProperties(), kernel->getKernelProperties(), blocksize);
+		size_t maxBlocksPerSm = getMaxResidentBlocksPerSM(gpuConfiguration, kernel.get()->getKernelProperties(), blocksize);
 		size_t occupancy = blocksize * maxBlocksPerSm;
 
-		std::cout << "Trying blocksize " <<   blocksize << std::endl;
+		//std::cout << "Trying blocksize " << blocksize << std::endl;
 
 		if (occupancy > highestOcc) {
 			maxBLockSize = blocksize;

@@ -21,7 +21,7 @@ private:
 
 public:
 	ElasticMatrixMultiplication();
-	ElasticMatrixMultiplication(LaunchParameters &launchConfig, std::string name);
+	ElasticMatrixMultiplication(LaunchParameters &launchConfig, std::string name, int matrixSize);
 
 	void initKernel();
 	void runKernel(cudaStream_t &streamToRunIn);

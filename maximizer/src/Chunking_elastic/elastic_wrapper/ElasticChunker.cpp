@@ -9,12 +9,12 @@
 
 ElasticChunker::ElasticChunker() :
 		AbstractElasticKernel(), dataSize(67108864), rabinData_d(0), dataBuffer_d(0), results_d(0) {
-this->memConsumption = (sizeof(BYTE) * dataSize) + sizeof(rabinData) + (getSizeOfBitArray(dataSize) * 32);
+this->memConsumption = (sizeof(BYTE) * dataSize) + sizeof(rabinData) + (getSizeOfBitArray(dataSize) * 4);
 }
 
-ElasticChunker::ElasticChunker(LaunchParameters &launchConfig, std::string name) :
-		AbstractElasticKernel(launchConfig,name), dataSize(67108864), rabinData_d(0), dataBuffer_d(0), results_d(0) {
-	this->memConsumption = (sizeof(BYTE) * dataSize) + sizeof(rabinData) + (getSizeOfBitArray(dataSize) * 32);
+ElasticChunker::ElasticChunker(LaunchParameters &launchConfig, std::string name,int dataSize) :
+		AbstractElasticKernel(launchConfig,name), dataSize(dataSize), rabinData_d(0), dataBuffer_d(0), results_d(0) {
+	this->memConsumption = (sizeof(BYTE) * dataSize) + sizeof(rabinData) + (getSizeOfBitArray(dataSize) * 16);
 
 
 }

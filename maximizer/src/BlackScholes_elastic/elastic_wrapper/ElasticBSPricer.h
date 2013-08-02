@@ -30,11 +30,13 @@ private:
 	const static float RISKFREE = 0.02f;
 	const  static float VOLATILITY = 0.30f;
 	float RandFloat(float low, float high);
+	int numOptions;
+	int optionSize;
 
 
 public:
 	ElasticBSPricer();
-	ElasticBSPricer(LaunchParameters &launchConfig, std::string name);
+	ElasticBSPricer(LaunchParameters &launchConfig, std::string name, int numOptions);
 
 	void initKernel();
 	void runKernel(cudaStream_t &streamToRunIn);

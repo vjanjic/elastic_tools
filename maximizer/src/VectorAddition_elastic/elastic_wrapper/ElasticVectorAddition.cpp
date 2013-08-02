@@ -10,16 +10,17 @@
 
 ElasticVectorAddition::ElasticVectorAddition() :
 		AbstractElasticKernel() {
-	this->numElems = VEC_LEN;
-	this->memConsumption  = (sizeof(int) * this->numElems) * 2;
+	this->numElems = VEC_LEN
+	;
+	this->memConsumption = (sizeof(int) * this->numElems) * 2;
 	// TODO Auto-generated constructor stub
 
 }
 
-ElasticVectorAddition::ElasticVectorAddition(LaunchParameters& launchConfig, std::string name) :
+ElasticVectorAddition::ElasticVectorAddition(LaunchParameters& launchConfig, std::string name, int numElems) :
 		AbstractElasticKernel(launchConfig, name) {
-	this->numElems = VEC_LEN;
-	this->memConsumption  = (sizeof(int) * this->numElems) * 2;
+	this->numElems = numElems;
+	this->memConsumption = (sizeof(int) * this->numElems) * 2;
 
 }
 

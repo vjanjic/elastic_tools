@@ -23,6 +23,7 @@ private:
 	std::vector<std::pair<boost::shared_ptr<AbstractElasticKernel>, cudaStream_t> > kernelsAndStreams;
 	size_t getFreeGPUMemory(size_t accuracy, size_t safeGuardAmount);
 
+
 public:
 	KernelExecutionQueue();
 	virtual ~KernelExecutionQueue();
@@ -31,7 +32,7 @@ public:
 
 	void runKernels();
 	void disposeQueue();
-	friend std::ostream &operator<< (std::ostream &output, const KernelExecutionQueue &q);
+	friend std::ostream &operator<<(std::ostream &output, const KernelExecutionQueue &q);
 };
 
 #endif /* KERNELEXECUTIONQUEUE_H_ */

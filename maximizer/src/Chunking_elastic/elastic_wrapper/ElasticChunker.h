@@ -24,7 +24,7 @@ private:
 	size_t dataSize;
 public:
 	ElasticChunker();
-	ElasticChunker(LaunchParameters &launchConfig, std::string name);
+	ElasticChunker(LaunchParameters &launchConfig, std::string name, int dataSize);
 	virtual ~ElasticChunker();
 	void initKernel();
 	void runKernel(cudaStream_t &streamToRunIn);
