@@ -16,9 +16,10 @@
 #include "KernelExecutionQueue.h"
 #include "../elastic_kernel/occupancy_tools/OccupancyCalculator.h"
 #include "cuda_runtime.h"
+#include "../misc/SimpleTimer.h"
 
 enum OptimizationPolicy {
-	FAIR, MINIMUM_QUEUES, MAXIMUM_OCCUPANCY, MAXIMUM_CONCURENCY
+	FAIR, MINIMUM_QUEUES, MAXIMUM_OCCUPANCY, MAXIMUM_CONCURENCY, NATIVE
 };
 
 struct kernelMemConsumptionComparator {
@@ -33,12 +34,13 @@ private:
 	std::vector<KernelExecutionQueue> kernelQueues;
 	void sortKernelByMemoryConsumption();
 	void moldKernelLaunchConfig(boost::shared_ptr<AbstractElasticKernel> kernel);
+	void optimiseQueuesForMaximumConcurency();
 
 public:
 	void printOptimisation();
 	KernelScheduler();
 	void addKernel(boost::shared_ptr<AbstractElasticKernel> kernel);
-	void runKernels(OptimizationPolicy policy);
+	double runKernels(OptimizationPolicy policy, int preferedberOfConcurentKernels = 2);
 	void orderKernelsInQueues_FAIR_();
 	void orderKernelsInQueues_MINIMUM_QUEUES_();
 	void moldKernels_MAXIMUM_OCCUPANCY_();

@@ -84,7 +84,130 @@ void KernelExecutionQueue::disposeQueue() {
 	this->kernelsAndStreams.begin();
 }
 
+void KernelExecutionQueue::generateKernelCombinations(int offset, int k, std::vector<boost::shared_ptr<AbstractElasticKernel> >& combination,
+		std::vector<boost::shared_ptr<AbstractElasticKernel> >& elems,
+		std::vector<std::pair<std::vector<boost::shared_ptr<AbstractElasticKernel> >, double> >& results) {
 
+	if (k == 0) {
+		double changeIndex = 0;
+
+		for (std::vector<boost::shared_ptr<AbstractElasticKernel> >::iterator it = combination.begin(); it != combination.end(); ++it) {
+			int newThrCount = limitKernel((*it), KernelLimits(0.1, 0.1, 0.1, 0.1, getGPUConfiguration())).getNumTotalThreads();
+			double currentThrs = (double) (*it).get()->getLaunchParams().getNumTotalThreads();
+			double delta = std::abs((double) (newThrCount - currentThrs) / currentThrs);
+			changeIndex = changeIndex + delta;
+		}
+
+		changeIndex = changeIndex / (double) combination.size();
+		results.push_back(std::make_pair(combination, changeIndex));
+		return;
+	}
+	for (int i = offset; i <= elems.size() - k; ++i) {
+		combination.push_back(elems[i]);
+		generateKernelCombinations(i + 1, k - 1, combination, elems, results);
+		combination.pop_back();
+	}
+
+}
+
+void KernelExecutionQueue::combineKernel() {
+
+	std::vector<boost::shared_ptr<AbstractElasticKernel> > kernels;
+
+	for (std::vector<std::pair<boost::shared_ptr<AbstractElasticKernel>, cudaStream_t> >::iterator it = this->kernelsAndStreams.begin();
+			it != this->kernelsAndStreams.end(); ++it) {
+		kernels.push_back((*it).first);
+	}
+	this->kernelsAndStreams.clear();
+	this->memoryUsed = 0;
+	std::vector<boost::shared_ptr<AbstractElasticKernel> > comb;
+	std::vector<std::pair<std::vector<boost::shared_ptr<AbstractElasticKernel> >, double> > results;
+	this->generateKernelCombinations(0, 2, comb, kernels, results);
+	for (std::vector<std::pair<std::vector<boost::shared_ptr<AbstractElasticKernel> >, double> >::iterator it = results.begin(); it != results.end(); ++it) {
+
+		for (std::vector<boost::shared_ptr<AbstractElasticKernel> >::const_iterator it2 = (*it).first.begin(); it2 != (*it).first.end(); ++it2) {
+			//std::cout << *(*it2).get() << " | ";
+		}
+		//std::cout << (*it).second << std::endl;
+	}
+
+	std::vector<boost::shared_ptr<AbstractElasticKernel> > extracted = extractKernelSequenceWithMinModification(results);
+
+	//std::cout << "-----------------------------------------------" << std::endl;
+	for (std::vector<boost::shared_ptr<AbstractElasticKernel> >::const_iterator iter = extracted.begin(); iter != extracted.end(); ++iter) {
+		//std::cout << *(*iter).get() << std::endl;
+		this->addKernel((*iter));
+	}
+
+}
+
+bool KernelExecutionQueue::isKernelInVector(std::vector<boost::shared_ptr<AbstractElasticKernel> > kernelVector,
+		boost::shared_ptr<AbstractElasticKernel> vector) {
+	for (std::vector<boost::shared_ptr<AbstractElasticKernel> >::const_iterator it = kernelVector.begin(); it != kernelVector.end(); ++it) {
+		if ((*it) == vector) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool KernelExecutionQueue::doVectorsContainCommonElem(std::vector<boost::shared_ptr<AbstractElasticKernel> > kernelVector_x,
+		std::vector<boost::shared_ptr<AbstractElasticKernel> > kernelVector_y) {
+	for (std::vector<boost::shared_ptr<AbstractElasticKernel> >::const_iterator it = kernelVector_x.begin(); it != kernelVector_x.end(); ++it) {
+		if (this->isKernelInVector(kernelVector_y, (*it))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+std::vector<boost::shared_ptr<AbstractElasticKernel> > KernelExecutionQueue::extractKernelSequenceWithMinModification(
+		std::vector<std::pair<std::vector<boost::shared_ptr<AbstractElasticKernel> >, double> > combinations) {
+	ConcurencyVectorComparator comparator;
+	std::sort(combinations.begin(), combinations.end(), comparator);
+	std::vector<boost::shared_ptr<AbstractElasticKernel> > results;
+
+	for (std::vector<std::pair<std::vector<boost::shared_ptr<AbstractElasticKernel> >, double> >::const_iterator it = combinations.begin();
+			it != combinations.end(); ++it) {
+		if (!this->doVectorsContainCommonElem(results, (*it).first)) {
+			this->limitKernels((*it).first);
+			results.insert(results.end(), (*it).first.begin(), (*it).first.end());
+			continue;
+		}
+
+	}
+	if (this->kernelsAndStreams.size() != results.size()) {
+		for (std::vector<std::pair<std::vector<boost::shared_ptr<AbstractElasticKernel> >, double> >::const_iterator it = combinations.begin();
+				it != combinations.end(); ++it) {
+
+			for (std::vector<boost::shared_ptr<AbstractElasticKernel> >::const_iterator it2 = (*it).first.begin(); it2 != (*it).first.end(); ++it2) {
+
+				if (!this->isKernelInVector(results, (*it2))) {
+					results.push_back((*it2));
+				}
+
+			}
+
+		}
+	}
+
+	return results;
+}
+
+void KernelExecutionQueue::limitKernels(std::vector<boost::shared_ptr<AbstractElasticKernel> > kernels) {
+
+	double resoruceFraction = 1.0 / (double) kernels.size();
+	KernelLimits limit = KernelLimits(resoruceFraction, resoruceFraction, resoruceFraction, resoruceFraction, getGPUConfiguration());
+
+	for (std::vector<boost::shared_ptr<AbstractElasticKernel> >::const_iterator it = kernels.begin(); it != kernels.end(); ++it) {
+		LaunchParameters currentParams = (*it).get()->getLaunchParams();
+		LaunchParameters newParams = limitKernel((*it), limit);
+
+		//std::cout << currentParams << " ---- " << newParams<< std::endl;
+		(*it).get()->setLaunchParams(newParams);
+	}
+
+}
 
 std::ostream& operator <<(std::ostream& output, const KernelExecutionQueue& q) {
 

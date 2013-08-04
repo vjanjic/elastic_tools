@@ -16,35 +16,54 @@ void KernelScheduler::addKernel(boost::shared_ptr<AbstractElasticKernel> kernel)
 
 }
 
-void KernelScheduler::runKernels(OptimizationPolicy policy) {
+double KernelScheduler::runKernels(OptimizationPolicy policy, int preferedNumberOfConcurentKernels) {
+	SimpleTimer t("debugTimer");
 
-	if (policy == 0) {
-		this->orderKernelsInQueues_FAIR_();
+	if (policy != 4) {
+		if (policy == 0) {
+			this->orderKernelsInQueues_FAIR_();
+		}
+		if (policy == 1) {
+			this->orderKernelsInQueues_MINIMUM_QUEUES_();
+		}
+
+		if (policy == 2 || policy == 3) {
+			this->moldKernels_MAXIMUM_OCCUPANCY_();
+			this->orderKernelsInQueues_MINIMUM_QUEUES_();
+
+		}
+		if (policy == 3) {
+			this->optimiseQueuesForMaximumConcurency();
+		}
+
+		//now we run the execution queues
+		t.start();
+		int queueNum = 1;
+		for (std::vector<KernelExecutionQueue>::iterator it = this->kernelQueues.begin(); it != this->kernelQueues.end(); ++it) {
+			//std::cout << "Running kernel queue [" << queueNum << "]" << std::endl << (*it) << std::endl;
+			++queueNum;
+			(*it).initKernels();
+			(*it).runKernels();
+			(*it).disposeQueue();
+
+		}
+		return t.stop();
+
+	} else {
+		t.start();
+		// if the policy is native.. just serialize all the kernels because that would have happened in real life...
+		cudaStream_t stream;
+		cudaStreamCreate(&stream);
+		for (std::vector<boost::shared_ptr<AbstractElasticKernel> >::iterator it = this->kernelsToRun.begin(); it != this->kernelsToRun.end(); ++it) {
+
+			(*it).get()->initKernel();
+			(*it).get()->runKernel(stream);
+			(*it).get()->freeResources();
+
+		}
+		cudaStreamDestroy(stream);
+		return t.stop();
 	}
-	if (policy == 1) {
-		this->orderKernelsInQueues_MINIMUM_QUEUES_();
-	}
-
-	if (policy == 2) {
-		this->moldKernels_MAXIMUM_OCCUPANCY_();
-		this->orderKernelsInQueues_MINIMUM_QUEUES_();
-
-	}
-
-	int queueNum = 1;
-
-	for (std::vector<KernelExecutionQueue>::iterator it = this->kernelQueues.begin(); it != this->kernelQueues.end(); ++it) {
-		//std::cout << "Running kernel queue [" << queueNum << "]" << std::endl << (*it) << std::endl;
-		++queueNum;
-		(*it).initKernels();
-		(*it).runKernels();
-		(*it).disposeQueue();
-
-	}
-
-	/*
-	 * we'll think about this one a little bit more over a cup of coffee......... :(
-	 */
 
 }
 
@@ -125,6 +144,13 @@ void KernelScheduler::moldKernelLaunchConfig(boost::shared_ptr<AbstractElasticKe
 	}
 
 	kernel.get()->setLaunchlParams(LaunchParameters(newBlockSize, newBlockNum));
+
+}
+
+void KernelScheduler::optimiseQueuesForMaximumConcurency() {
+	for (std::vector<KernelExecutionQueue>::iterator it = this->kernelQueues.begin(); it != this->kernelQueues.end(); ++it) {
+		(*it).combineKernel();
+	}
 
 }
 

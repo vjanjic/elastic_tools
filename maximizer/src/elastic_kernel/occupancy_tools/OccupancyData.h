@@ -7,6 +7,7 @@
 
 #ifndef OCCUPANCYDATA_HPP_
 #define OCCUPANCYDATA_HPP_
+#define MAX_BLOCKS_PER_SM 8
 #include "stdio.h"
 #include <iostream>
 #include <cmath>
@@ -101,7 +102,8 @@ public:
 		this->sharedMem = roundToSize_t((GPUConf.sharedMemPerBlock * GPUConf.multiProcessorCount) * shMemFrac);
 		this->threads =  roundToSize_t((GPUConf.maxThreadsPerMultiProcessor * GPUConf.multiProcessorCount) * threadsFrac);
 		this->registers = roundToSize_t(((GPUConf.regsPerBlock * GPUConf.multiProcessorCount) * regsFrac));
-		this->blocks = roundToSize_t(((8 * GPUConf.multiProcessorCount) * blocksFrac));
+		this->blocks = roundToSize_t(((GPUConf.maxThreadsPerBlock  * MAX_BLOCKS_PER_SM * GPUConf.multiProcessorCount) * blocksFrac));
+
 	}
 
 	inline KernelLimits(size_t sharedMem, size_t threads, size_t regs, size_t blocks) {

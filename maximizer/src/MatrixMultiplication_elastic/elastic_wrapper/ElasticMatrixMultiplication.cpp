@@ -39,7 +39,8 @@ void ElasticMatrixMultiplication::initKernel() {
 
 void ElasticMatrixMultiplication::runKernel(cudaStream_t& streamToRunIn) {
 	int tileW = matrixWidth / gridConfig.getNumTotalThreads();
-	startMMKernel(gridConfig.getThreadsPerBlock(), gridConfig.getBlocksPerGrid(), d_M, d_N, d_P, matrixWidth, tileW, streamToRunIn);
+	startMMKernel(gridConfig.getThreadsPerBlock(), gridConfig.getBlocksPerGrid(), d_M, d_N, d_P, matrixWidth, tileW, gridConfig.getNumTotalThreads(),
+			streamToRunIn);
 }
 
 cudaFuncAttributes ElasticMatrixMultiplication::getKernelProperties() {

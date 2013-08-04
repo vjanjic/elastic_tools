@@ -13,7 +13,7 @@ AbstractElasticKernel::AbstractElasticKernel() {
 	this->name = "n/a";
 }
 
-AbstractElasticKernel::AbstractElasticKernel(const LaunchParameters& gridConfig,std::string name) {
+AbstractElasticKernel::AbstractElasticKernel(const LaunchParameters& gridConfig, std::string name) {
 	this->gridConfig = gridConfig;
 	this->name = name;
 }
@@ -28,6 +28,10 @@ void AbstractElasticKernel::setLaunchlParams(const LaunchParameters& gridConfig)
 
 LaunchParameters AbstractElasticKernel::getLaunchParams() {
 	return this->gridConfig;
+}
+
+void AbstractElasticKernel::setLaunchParams(LaunchParameters params) {
+	this->gridConfig = params;
 }
 
 std::ostream & operator<<(std::ostream &output, const AbstractElasticKernel &kernel) {

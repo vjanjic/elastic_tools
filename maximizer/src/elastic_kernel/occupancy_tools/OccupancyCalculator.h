@@ -15,7 +15,6 @@
 #include "../AbstractElasticKernel.hpp"
 #include <boost/shared_ptr.hpp>
 
-
 inline cudaDeviceProp getGPUProperties() {
 	cudaDeviceProp props;
 	cudaGetDeviceProperties(&props, 0);
@@ -54,11 +53,18 @@ inline BlockUsage getBlockUsageStats(const cudaDeviceProp &deviceProps, const cu
 
 	return BlockUsage(sharedMemory, numThreads, numRegisters, blocksPerSM);
 }
+inline cudaDeviceProp getDeviceProps() {
+	cudaDeviceProp props;
+	cudaGetDeviceProperties(&props, 0);
+	return props;
+}
 
-/*inline void reduceBlocksToFitOnGPU(size_t usagePerBlock, size_t limitPerGPU, LaunchParameters &phyParams) {
+
+
+inline void reduceBlocksToFitOnGPU(size_t usagePerBlock, size_t limitPerGPU, LaunchParameters &params) {
 	// calcualte how much is the usage for the whole card...
 
-	size_t currentUsage = phyParams.getBlocksPerGrid() * usagePerBlock;
+	size_t currentUsage = params.getBlocksPerGrid() * usagePerBlock;
 	//std::cout << "USAGE per block" << usagePerBlock << std::endl;
 
 	//std::cout << "USAGE " << currentUsage << std::endl;
@@ -72,23 +78,23 @@ inline BlockUsage getBlockUsageStats(const cudaDeviceProp &deviceProps, const cu
 
 		size_t decrement = ceil((double) deficit / usagePerBlock); // calcualte how many blocks we need to trim in order to fit
 
-		size_t decreasedBlocks = phyParams.getBlocksPerGrid() - decrement;
+		size_t decreasedBlocks = params.getBlocksPerGrid() - decrement;
 
-		phyParams.setBlocksPerGrid(decreasedBlocks);
+		params.setBlocks(decreasedBlocks);
 	}
 }
 
-inline LaunchParameters limitUsage(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps, LogicalParameters lParams, KernelLimits limits) {
+inline LaunchParameters limitUsage(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps, LaunchParameters lParams, KernelLimits limits) {
 	//std::cout << "REGS " << kernelProps.numRegs << std::endl;
 	// we get the occupancy information for the particualr block
-	BlockUsage usage = getBlockUsageStats(deviceProps, kernelProps, lParams.getNumThreadsPerBlock());
-	std::cout << usage << std::endl;
+	BlockUsage usage = getBlockUsageStats(deviceProps, kernelProps, lParams.getThreadsPerBlock());
+	//std::cout << usage << std::endl;
 	// we calcualte the maximum number of resident blocks of this size on the GPU
 	size_t maximumResidentBLocks = usage.getNumBlocksPerSM() * deviceProps.multiProcessorCount;
 
 	// constructing physical configuration... based on calcualted number of blocks :)
-	size_t blocksPhysical = min3(lParams.getNumberBlocks(), maximumResidentBLocks, limits.getNumBlocks());
-	size_t threadsPhysical = lParams.getNumThreadsPerBlock();
+	size_t blocksPhysical = min3(lParams.getBlocksPerGrid(), maximumResidentBLocks, limits.getNumBlocks());
+	size_t threadsPhysical = lParams.getThreadsPerBlock();
 	LaunchParameters result = LaunchParameters(threadsPhysical, blocksPhysical);
 
 	// now we need to further limit this physical  configuration, which of course is pain
@@ -98,7 +104,16 @@ inline LaunchParameters limitUsage(const cudaDeviceProp &deviceProps, const cuda
 	reduceBlocksToFitOnGPU(usage.getNumRegisters(), limits.getNumRegisters(), result);
 
 	return result;
-}*/
+}
+
+
+inline LaunchParameters limitKernel(boost::shared_ptr<AbstractElasticKernel> kernel, KernelLimits limits) {
+	LaunchParameters params = kernel.get()->getLaunchParams();
+	cudaFuncAttributes attrs = kernel.get()->getKernelProperties();
+	cudaDeviceProp props = getDeviceProps();
+	return limitUsage(props,attrs,params,limits);
+
+}
 
 inline size_t getOptimalBlockSize(boost::shared_ptr<AbstractElasticKernel> kernel) {
 	cudaDeviceProp gpuConfiguration = getGPUProperties();

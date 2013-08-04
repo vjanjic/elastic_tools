@@ -58,6 +58,18 @@ public:
 		this->gridY = 1;
 	}
 
+	inline void setBlocks(size_t blocks) {
+		this->gridX = blocks;
+		this->gridY = 1;
+	}
+
+	inline void setThreads(size_t threads) {
+		this->blockX = threads;
+		this->blockY = 1;
+		this->blockZ = 1;
+	}
+
+
 	inline size_t getNumTotalThreads() {
 		return this->blockX * this->blockY * this->blockZ * this->gridX * this->gridY;
 	}

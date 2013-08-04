@@ -35,6 +35,7 @@ public:
 	void setLaunchlParams(const LaunchParameters& gridConfig);
 
 	LaunchParameters getLaunchParams();
+	void setLaunchParams(LaunchParameters params);
 
 	friend std::ostream &operator<<(std::ostream &output, const AbstractElasticKernel &kernel);
 
