@@ -15,6 +15,11 @@
 #include "../AbstractElasticKernel.hpp"
 #include <boost/shared_ptr.hpp>
 
+struct OccupancyInformation {
+	int optimalThreadBlockSize;
+	double respectiveSMOccupancy;
+};
+
 inline cudaDeviceProp getGPUProperties() {
 	cudaDeviceProp props;
 	cudaGetDeviceProperties(&props, 0);
@@ -58,8 +63,6 @@ inline cudaDeviceProp getDeviceProps() {
 	cudaGetDeviceProperties(&props, 0);
 	return props;
 }
-
-
 
 inline void reduceBlocksToFitOnGPU(size_t usagePerBlock, size_t limitPerGPU, LaunchParameters &params) {
 	// calcualte how much is the usage for the whole card...
@@ -106,16 +109,37 @@ inline LaunchParameters limitUsage(const cudaDeviceProp &deviceProps, const cuda
 	return result;
 }
 
-
 inline LaunchParameters limitKernel(boost::shared_ptr<AbstractElasticKernel> kernel, KernelLimits limits) {
 	LaunchParameters params = kernel.get()->getLaunchParams();
 	cudaFuncAttributes attrs = kernel.get()->getKernelProperties();
 	cudaDeviceProp props = getDeviceProps();
-	return limitUsage(props,attrs,params,limits);
+	return limitUsage(props, attrs, params, limits);
 
 }
 
+inline double getOccupancyForKernel(boost::shared_ptr<AbstractElasticKernel> kernel) {
+	cudaDeviceProp gpuConfiguration = getGPUProperties();
+	size_t max_occupancy = gpuConfiguration.maxThreadsPerMultiProcessor;
+	size_t threadNum = min3(kernel.get()->getKernelProperties().maxThreadsPerBlock, gpuConfiguration.maxThreadsPerMultiProcessor,
+			kernel.get()->getLaunchParams().getThreadsPerBlock());
+
+	size_t maxBlocksPerSm = getMaxResidentBlocksPerSM(gpuConfiguration, kernel.get()->getKernelProperties(), threadNum);
+	size_t occupancy = threadNum * maxBlocksPerSm;
+
+	return (double) occupancy / max_occupancy;
+
+}
+
+inline double getMemoryOccupancyForKernel(boost::shared_ptr<AbstractElasticKernel> kernel) {
+	cudaDeviceProp deviceProps = getGPUConfiguration();
+	double totalGPUmem = (double) deviceProps.totalGlobalMem;
+	double result = (double) kernel.get()->getMemoryConsumption() / totalGPUmem;
+
+	return result;
+}
+
 inline size_t getOptimalBlockSize(boost::shared_ptr<AbstractElasticKernel> kernel) {
+
 	cudaDeviceProp gpuConfiguration = getGPUProperties();
 	size_t max_occupancy = gpuConfiguration.maxThreadsPerMultiProcessor;
 	size_t largestThrNum = min2(kernel.get()->getKernelProperties().maxThreadsPerBlock, gpuConfiguration.maxThreadsPerMultiProcessor);
@@ -130,7 +154,7 @@ inline size_t getOptimalBlockSize(boost::shared_ptr<AbstractElasticKernel> kerne
 		size_t maxBlocksPerSm = getMaxResidentBlocksPerSM(gpuConfiguration, kernel.get()->getKernelProperties(), blocksize);
 		size_t occupancy = blocksize * maxBlocksPerSm;
 
-		//std::cout << "Trying blocksize " << blocksize << std::endl;
+		//std::cout << "Trying blocksize "  << blocksize << " " << occupancy  << " " << highestOcc  <<  " " << (double)occupancy / max_occupancy << std::endl;
 
 		if (occupancy > highestOcc) {
 			maxBLockSize = blocksize;
@@ -140,8 +164,9 @@ inline size_t getOptimalBlockSize(boost::shared_ptr<AbstractElasticKernel> kerne
 		// early out, can't do better
 		if (highestOcc == max_occupancy)
 			break;
-		//printf("Blocksize %d\n", blocksize);
 	}
+	//printf("Blocksize %d\n", highestOcc);
+
 	return maxBLockSize;
 
 }

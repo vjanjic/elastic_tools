@@ -31,7 +31,6 @@ public:
 	virtual cudaFuncAttributes getKernelProperties() = 0;
 	virtual void freeResources() = 0;
 	virtual size_t getMemoryConsumption() = 0;
-
 	void setLaunchlParams(const LaunchParameters& gridConfig);
 
 	LaunchParameters getLaunchParams();

@@ -209,6 +209,28 @@ void KernelExecutionQueue::limitKernels(std::vector<boost::shared_ptr<AbstractEl
 
 }
 
+double KernelExecutionQueue::getComputeOccupancyForQueue() {
+	double result = 0;
+	for (std::vector<std::pair<boost::shared_ptr<AbstractElasticKernel>, cudaStream_t> >::const_iterator it = kernelsAndStreams.begin();
+			it != kernelsAndStreams.end(); ++it) {
+		result = result + getOccupancyForKernel((*it).first);
+	}
+	return result / (double) this->kernelsAndStreams.size();
+}
+
+double KernelExecutionQueue::getStorageOccupancyForQueue() {
+
+
+	double result = 0;
+	double gpuMem = (double) this->maxGlobalMem;
+	for (std::vector<std::pair<boost::shared_ptr<AbstractElasticKernel>, cudaStream_t> >::const_iterator it = kernelsAndStreams.begin();
+			it != kernelsAndStreams.end(); ++it) {
+		result = result + (*it).first.get()->getMemoryConsumption();
+	}
+
+	return result / gpuMem;
+}
+
 std::ostream& operator <<(std::ostream& output, const KernelExecutionQueue& q) {
 
 	for (std::vector<std::pair<boost::shared_ptr<AbstractElasticKernel>, cudaStream_t> >::const_iterator it = q.kernelsAndStreams.begin();

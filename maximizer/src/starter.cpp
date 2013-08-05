@@ -310,174 +310,154 @@ void addKernelsToScheduler(KernelScheduler& schl) {
 
 }
 
-double runFairExperiment(int itters) {
+/*double runFairExperiment(int itters) {
+ double avg = 0;
+ double N = (double) itters;
+ for (int var = 0; var < itters; ++var) {
+ KernelScheduler scheduler;
+ addKernelsToScheduler2(scheduler);
+
+ avg = avg + scheduler.runKernels(FAIR);
+
+ }
+ return avg / N;
+ }
+
+ double runMaxOccupancyExperiment(int itters) {
+ double avg = 0;
+ double N = (double) itters;
+ for (int var = 0; var < itters; ++var) {
+
+ KernelScheduler scheduler;
+ addKernelsToScheduler2(scheduler);
+
+ avg = avg + scheduler.runKernels(MAXIMUM_OCCUPANCY);
+ }
+ return avg / N;
+ }
+
+ double runMaxConcurencyExperiment(int itters) {
+ double avg = 0;
+ double N = (double) itters;
+ for (int var = 0; var < itters; ++var) {
+ KernelScheduler scheduler;
+ addKernelsToScheduler2(scheduler);
+
+ avg = avg + scheduler.runKernels(MAXIMUM_CONCURENCY);
+ }
+ return avg / N;
+ }
+
+ double runMinQueuesExperiment(int itters) {
+ double avg = 0;
+ double N = (double) itters;
+ for (int var = 0; var < itters; ++var) {
+ KernelScheduler scheduler;
+ addKernelsToScheduler2(scheduler);
+ avg = avg + scheduler.runKernels(MINIMUM_QUEUES);
+ }
+ return avg / N;
+ }
+
+
+
+ double runNativeExperiment(int itters) {
+ double avg = 0;
+ double N = (double) itters;
+ for (int var = 0; var < itters; ++var) {
+ KernelScheduler scheduler;
+ addKernelsToScheduler2(scheduler);
+ avg = avg + scheduler.runKernels(NATIVE);
+ }
+ return avg / N;
+ }
+
+ void _generateCombinations(int offset, int k, std::vector<int> &combination, std::vector<int>& elems, std::vector<std::vector<int> >& results) {
+ if (k == 0) {
+ results.push_back(combination);
+ return;
+ }
+ for (int i = offset; i <= elems.size() - k; ++i) {
+ combination.push_back(elems[i]);
+ _generateCombinations(i + 1, k - 1, combination, elems, results);
+ combination.pop_back();
+ }
+ }*/
+
+/*std::vector<std::vector<int> > makeCombinations(std::vector<int> elems, int combinationSize) {
+ std::vector<int> comb;
+ std::vector<std::vector<int> > results;
+ _generateCombinations(0, combinationSize, comb, elems, results);
+ return results;
+ }*/
+
+double RunExperimentWithPolicy(OptimizationPolicy policy, int samples) {
 	double avg = 0;
-	double N = (double) itters;
-	for (int var = 0; var < itters; ++var) {
+	double N = (double) samples;
+	for (int var = 0; var < samples; ++var) {
 		KernelScheduler scheduler;
 		addKernelsToScheduler2(scheduler);
-
-		avg = avg + scheduler.runKernels(FAIR);
-
+		avg = avg + scheduler.runKernels(policy);
 	}
 	return avg / N;
 }
 
-double runMaxOccupancyExperiment(int itters) {
-	double avg = 0;
-	double N = (double) itters;
-	for (int var = 0; var < itters; ++var) {
+void printGPUUtilisationForPolicy(OptimizationPolicy policy) {
 
-		KernelScheduler scheduler;
-		addKernelsToScheduler2(scheduler);
+	KernelScheduler schl = KernelScheduler();
+	addKernelsToScheduler2(schl);
 
-		avg = avg + scheduler.runKernels(MAXIMUM_OCCUPANCY);
-	}
-	return avg / N;
+	GPUUtilization ut1 = schl.getGPUOccupancyForPolicy(policy);
+	printf("Compute Occupancy: %.6f              |\n", ut1.averageComputeOccupancy);
+	printf("Storage Occupancy: %.6f              |\n", ut1.averageStorageOccupancy);
+
+//std::cout << schl;
 }
 
-double runMaxConcurencyExperiment(int itters) {
-	double avg = 0;
-	double N = (double) itters;
-	for (int var = 0; var < itters; ++var) {
-		KernelScheduler scheduler;
-		addKernelsToScheduler2(scheduler);
+void printOptimisationPolicyDetails() {
+	std::cout << "------------------NATIVE------------------" << std::endl;
+	printGPUUtilisationForPolicy(NATIVE);
+	std::cout << "------------------------------------------" << std::endl << std::endl;
 
-		avg = avg + scheduler.runKernels(MAXIMUM_CONCURENCY);
-	}
-	return avg / N;
+	std::cout << "--------------------FAIR------------------" << std::endl;
+	printGPUUtilisationForPolicy(FAIR);
+	std::cout << "------------------------------------------" << std::endl << std::endl;
+
+	std::cout << "---------FAIR_MAXIMUM_OCCUPANCY-----------" << std::endl;
+	printGPUUtilisationForPolicy(FAIR_MAXIMUM_OCCUPANCY);
+	std::cout << "------------------------------------------" << std::endl << std::endl;
+
+	std::cout << "--------------MINIMUM_QUEUES--------------" << std::endl;
+	printGPUUtilisationForPolicy(MINIMUM_QUEUES);
+	std::cout << "------------------------------------------" << std::endl << std::endl;
+
+	std::cout << "-----MINIMUM_QUEUES_MAXIMUM_OCCUPANCY-----" << std::endl;
+	printGPUUtilisationForPolicy(MINIMUM_QUEUES_MAXIMUM_OCCUPANCY);
+	std::cout << "------------------------------------------" << std::endl << std::endl;
+
+	std::cout << "-------------MAXIMUM_CONCURENCY-----------" << std::endl;
+	printGPUUtilisationForPolicy(MAXIMUM_CONCURENCY);
+	std::cout << "------------------------------------------" << std::endl << std::endl;
 }
 
-double runMinQueuesExperiment(int itters) {
-	double avg = 0;
-	double N = (double) itters;
-	for (int var = 0; var < itters; ++var) {
-		KernelScheduler scheduler;
-		addKernelsToScheduler2(scheduler);
-		avg = avg + scheduler.runKernels(MINIMUM_QUEUES);
-	}
-	return avg / N;
+void runAllPolicies(int samples) {
+	//std::cout << "native: " << RunExperimentWithPolicy(NATIVE, samples) << std::endl;
+	//std::cout << "fair: " << RunExperimentWithPolicy(FAIR, samples) << std::endl;
+	//std::cout << "fair_max_occ: " << RunExperimentWithPolicy(FAIR_MAXIMUM_OCCUPANCY, samples) << std::endl;
+	//std::cout << "min_queues: " << RunExperimentWithPolicy(MINIMUM_QUEUES, samples) << std::endl;
+	//std::cout << "min_queues_max_occ: " << RunExperimentWithPolicy(MINIMUM_QUEUES_MAXIMUM_OCCUPANCY, samples) << std::endl;
+	std::cout << "max_concurency: " << RunExperimentWithPolicy(MAXIMUM_CONCURENCY, samples) << std::endl;
+
 }
 
-double runNativeExperiment(int itters) {
-	double avg = 0;
-	double N = (double) itters;
-	for (int var = 0; var < itters; ++var) {
-		KernelScheduler scheduler;
-		addKernelsToScheduler2(scheduler);
-		avg = avg + scheduler.runKernels(NATIVE);
-	}
-	return avg / N;
-}
-
-void _generateCombinations(int offset, int k, std::vector<int> &combination, std::vector<int>& elems, std::vector<std::vector<int> >& results) {
-	if (k == 0) {
-		results.push_back(combination);
-		return;
-	}
-	for (int i = offset; i <= elems.size() - k; ++i) {
-		combination.push_back(elems[i]);
-		_generateCombinations(i + 1, k - 1, combination, elems, results);
-		combination.pop_back();
-	}
-}
-
-std::vector<std::vector<int> > makeCombinations(std::vector<int> elems, int combinationSize) {
-	std::vector<int> comb;
-	std::vector<std::vector<int> > results;
-	_generateCombinations(0, combinationSize, comb, elems, results);
-	return results;
+void printQueueConfigurationForPolicy(OptimizationPolicy policy) {
+	KernelScheduler schl = KernelScheduler();
+	addKernelsToScheduler2(schl);
+	schl.getGPUOccupancyForPolicy(policy);
+	std::cout << schl << std::endl;
 }
 
 int main() {
-
-	KernelExecutionQueue q = KernelExecutionQueue();
-	q.addKernel(makeElasticKernel(128, 128, BLACK_SCHOLES, "BLACK_SCHOLES__1", 1));
-	q.addKernel(makeElasticKernel(224, 256, BLACK_SCHOLES, "BLACK_SCHOLES__2", 1));
-	q.addKernel(makeElasticKernel(128, 64, BLACK_SCHOLES, "BLACK_SCHOLES__3", 1));
-	q.addKernel(makeElasticKernel(128, 96, BLACK_SCHOLES, "BLACK_SCHOLES__4", 1));
-	q.addKernel(makeElasticKernel(128, 128, BLACK_SCHOLES, "BLACK_SCHOLES__5", 1));
-	q.addKernel(makeElasticKernel(128, 56, BLACK_SCHOLES, "BLACK_SCHOLES__6", 1));
-	q.addKernel(makeElasticKernel(128, 32, BLACK_SCHOLES, "BLACK_SCHOLES__7", 1));
-	q.addKernel(makeElasticKernel(128, 32, BLACK_SCHOLES, "BLACK_SCHOLES__8", 1));
-	q.addKernel(makeElasticKernel(224, 16, BLACK_SCHOLES, "BLACK_SCHOLES__9", 1));
-	q.addKernel(makeElasticKernel(128, 160, BLACK_SCHOLES, "BLACK_SCHOLES__10", 1));
-	q.addKernel(makeElasticKernel(128, 512, BLACK_SCHOLES, "BLACK_SCHOLES__11", 1));
-	q.addKernel(makeElasticKernel(128, 64, BLACK_SCHOLES, "BLACK_SCHOLES__12", 1));
-	q.addKernel(makeElasticKernel(128, 8, BLACK_SCHOLES, "BLACK_SCHOLES__13", 1));
-	q.addKernel(makeElasticKernel(128, 16, BLACK_SCHOLES, "BLACK_SCHOLES__14", 1));
-
-	/*	cudaStream_t s1, s2, s3, s4, s5, s6, s7, s8, s9;
-	 cudaStreamCreate(&s1);
-	 cudaStreamCreate(&s2);
-	 cudaStreamCreate(&s3);
-	 cudaStreamCreate(&s4);
-	 cudaStreamCreate(&s5);
-	 cudaStreamCreate(&s6);
-	 cudaStreamCreate(&s7);
-	 cudaStreamCreate(&s8);
-	 cudaStreamCreate(&s9);
-
-	 boost::shared_ptr<AbstractElasticKernel> k1 = makeElasticKernel(672, 5, MATRIX_MULT, "MATRIX_MULT__22", 3584);
-	 boost::shared_ptr<AbstractElasticKernel> k2 = makeElasticKernel(672, 5, MATRIX_MULT, "MATRIX_MULT__16", 3584);
-	 boost::shared_ptr<AbstractElasticKernel> k3 = makeElasticKernel(672, 7, MATRIX_MULT, "MATRIX_MULT__11", 3584);
-	 boost::shared_ptr<AbstractElasticKernel> k4 = makeElasticKernel(672, 8, VECTOR_ADD, "VECTOR_ADD__31", 19000000);
-	 boost::shared_ptr<AbstractElasticKernel> k5 = makeElasticKernel(960, 2, BLACK_SCHOLES, "VECTOR_ADD__31", 7500000);
-	 boost::shared_ptr<AbstractElasticKernel> k6 = makeElasticKernel(768, 10, VECTOR_ADD, "VECTOR_ADD__28", 18000000);
-	 boost::shared_ptr<AbstractElasticKernel> k7 = makeElasticKernel(768, 6, VECTOR_ADD, "VECTOR_ADD__15", 18000000);
-	 boost::shared_ptr<AbstractElasticKernel> k8 = makeElasticKernel(768, 9, VECTOR_ADD, "VECTOR_ADD__12", 18000000);
-	 boost::shared_ptr<AbstractElasticKernel> k9 = makeElasticKernel(768, 11, VECTOR_ADD, "VECTOR_ADD__3", 5000000);*/
-
-	/*	cudaDeviceProp props;
-	 cudaGetDeviceProperties(&props, 0);
-	 std::cout << limitKernel(k1, KernelLimits(.5, .5, .5, .5, props));
-	 k1.get()->initKernel();
-	 k2.get()->initKernel();
-
-	 //getOptimalBlockSize(k1);
-
-	 k1.get()->runKernel(s1);
-	 k2.get()->runKernel(s2);
-
-	 k1.get()->freeResources();
-	 k2.get()->freeResources();*/
-
-	/*	k1.get()->initKernel();
-	 k2.get()->initKernel();
-	 k3.get()->initKernel();
-	 k4.get()->initKernel();
-	 k5.get()->initKernel();
-	 k6.get()->initKernel();
-	 k7.get()->initKernel();
-	 k8.get()->initKernel();
-	 k9.get()->initKernel();
-
-	 k1.get()->runKernel(s1);
-	 k2.get()->runKernel(s2);
-	 k3.get()->runKernel(s3);
-	 k4.get()->runKernel(s4);
-	 k5.get()->runKernel(s5);
-	 k6.get()->runKernel(s6);
-	 k7.get()->runKernel(s7);
-	 k8.get()->runKernel(s8);
-	 k9.get()->runKernel(s9);
-
-
-	 k1.get()->freeResources();
-	 k2.get()->freeResources();
-	 k3.get()->freeResources();
-	 k4.get()->freeResources();
-	 k5.get()->freeResources();
-	 k6.get()->freeResources();
-	 k7.get()->freeResources();
-	 k8.get()->freeResources();
-	 k9.get()->freeResources();*/
-
-	std::cout << "native: " << runNativeExperiment(1) << std::endl;
-	std::cout << "fair: " << runFairExperiment(1) << std::endl;
-	std::cout << "min_queues: " << runMinQueuesExperiment(1) << std::endl;
-	std::cout << "max_occupancy: " << runMaxOccupancyExperiment(1) << std::endl;
-	std::cout << "max_concurency: " << runMaxConcurencyExperiment(1) << std::endl;
-
+	runAllPolicies(1);
 }
 

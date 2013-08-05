@@ -18,8 +18,19 @@
 #include "cuda_runtime.h"
 #include "../misc/SimpleTimer.h"
 
-enum OptimizationPolicy {
+/*enum OptimizationPolicy {
 	FAIR, MINIMUM_QUEUES, MAXIMUM_OCCUPANCY, MAXIMUM_CONCURENCY, NATIVE
+};*/
+
+enum OptimizationPolicy {
+	NATIVE, FAIR, FAIR_MAXIMUM_OCCUPANCY, MINIMUM_QUEUES, MINIMUM_QUEUES_MAXIMUM_OCCUPANCY, MAXIMUM_CONCURENCY
+
+};
+
+struct GPUUtilization {
+	double averageComputeOccupancy;
+	double averageStorageOccupancy;
+
 };
 
 struct kernelMemConsumptionComparator {
@@ -35,6 +46,7 @@ private:
 	void sortKernelByMemoryConsumption();
 	void moldKernelLaunchConfig(boost::shared_ptr<AbstractElasticKernel> kernel);
 	void optimiseQueuesForMaximumConcurency();
+	void applyOptimisationPolicy(OptimizationPolicy policy);
 
 public:
 	void printOptimisation();
@@ -44,6 +56,7 @@ public:
 	void orderKernelsInQueues_FAIR_();
 	void orderKernelsInQueues_MINIMUM_QUEUES_();
 	void moldKernels_MAXIMUM_OCCUPANCY_();
+	GPUUtilization getGPUOccupancyForPolicy(OptimizationPolicy policy);
 
 	virtual ~KernelScheduler();
 

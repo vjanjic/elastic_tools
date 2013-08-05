@@ -49,6 +49,8 @@ public:
 	void combineKernel();
 	void runKernels();
 	void disposeQueue();
+	double getComputeOccupancyForQueue();
+	double getStorageOccupancyForQueue();
 	friend std::ostream &operator<<(std::ostream &output, const KernelExecutionQueue &q);
 }
 ;

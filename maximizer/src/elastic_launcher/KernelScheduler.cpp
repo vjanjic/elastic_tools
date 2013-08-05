@@ -19,24 +19,8 @@ void KernelScheduler::addKernel(boost::shared_ptr<AbstractElasticKernel> kernel)
 double KernelScheduler::runKernels(OptimizationPolicy policy, int preferedNumberOfConcurentKernels) {
 	SimpleTimer t("debugTimer");
 
-	if (policy != 4) {
-		if (policy == 0) {
-			this->orderKernelsInQueues_FAIR_();
-		}
-		if (policy == 1) {
-			this->orderKernelsInQueues_MINIMUM_QUEUES_();
-		}
-
-		if (policy == 2 || policy == 3) {
-			this->moldKernels_MAXIMUM_OCCUPANCY_();
-			this->orderKernelsInQueues_MINIMUM_QUEUES_();
-
-		}
-		if (policy == 3) {
-			this->optimiseQueuesForMaximumConcurency();
-		}
-
-		//now we run the execution queues
+	if (policy != 0) {
+		this->applyOptimisationPolicy(policy);
 		t.start();
 		int queueNum = 1;
 		for (std::vector<KernelExecutionQueue>::iterator it = this->kernelQueues.begin(); it != this->kernelQueues.end(); ++it) {
@@ -150,6 +134,68 @@ void KernelScheduler::moldKernelLaunchConfig(boost::shared_ptr<AbstractElasticKe
 void KernelScheduler::optimiseQueuesForMaximumConcurency() {
 	for (std::vector<KernelExecutionQueue>::iterator it = this->kernelQueues.begin(); it != this->kernelQueues.end(); ++it) {
 		(*it).combineKernel();
+	}
+
+}
+
+void KernelScheduler::applyOptimisationPolicy(OptimizationPolicy policy) {
+
+	if (policy == 1) {
+		//FAIR
+		this->orderKernelsInQueues_FAIR_();
+	}
+	if (policy == 2) {
+		//FAIR maximum occupancy
+		this->moldKernels_MAXIMUM_OCCUPANCY_();
+		this->orderKernelsInQueues_FAIR_();
+
+	}
+	if (policy == 3) {
+		this->orderKernelsInQueues_MINIMUM_QUEUES_();
+
+	}
+	if (policy == 4) {
+		this->moldKernels_MAXIMUM_OCCUPANCY_();
+		this->orderKernelsInQueues_MINIMUM_QUEUES_();
+	}
+
+	if (policy == 5) {
+		this->moldKernels_MAXIMUM_OCCUPANCY_();
+		this->orderKernelsInQueues_MINIMUM_QUEUES_();
+		this->optimiseQueuesForMaximumConcurency();
+
+	}
+
+}
+
+GPUUtilization KernelScheduler::getGPUOccupancyForPolicy(OptimizationPolicy policy) {
+	GPUUtilization result;
+	result.averageComputeOccupancy = 0;
+	result.averageStorageOccupancy = 0;
+
+	if (policy == 0) {
+		for (std::vector<boost::shared_ptr<AbstractElasticKernel> >::iterator it = this->kernelsToRun.begin(); it != this->kernelsToRun.end(); ++it) {
+			result.averageStorageOccupancy += getMemoryOccupancyForKernel((*it));
+			result.averageComputeOccupancy += getOccupancyForKernel((*it));
+		}
+
+		result.averageComputeOccupancy = result.averageComputeOccupancy / (double) this->kernelsToRun.size();
+		result.averageStorageOccupancy = result.averageStorageOccupancy / (double) this->kernelsToRun.size();
+		return result;
+	} else {
+
+		this->applyOptimisationPolicy(policy);
+
+		for (std::vector<KernelExecutionQueue>::iterator it = this->kernelQueues.begin(); it != this->kernelQueues.end(); ++it) {
+			result.averageStorageOccupancy += (*it).getStorageOccupancyForQueue();
+			result.averageComputeOccupancy += (*it).getComputeOccupancyForQueue();
+		}
+
+		result.averageComputeOccupancy = result.averageComputeOccupancy / (double) this->kernelQueues.size();
+		result.averageStorageOccupancy = result.averageStorageOccupancy / (double) this->kernelQueues.size();
+
+		return result;
+
 	}
 
 }

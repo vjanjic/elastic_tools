@@ -17,35 +17,35 @@
 #include "../MatrixMultiplication_elastic/elastic_wrapper/ElasticMatrixMultiplication.h"
 #include <boost/shared_ptr.hpp>
 
-
 #include "string.h"
 #include <string>
 enum KernelType {
-	CHUNKING, BLACK_SCHOLES, SCALAR_PRODUCT, VECTOR_ADD,MATRIX_MULT
+	CHUNKING, BLACK_SCHOLES, SCALAR_PRODUCT, VECTOR_ADD, MATRIX_MULT
 };
 
-boost::shared_ptr<AbstractElasticKernel> makeElasticKernel(size_t threadsPerBlock, size_t blocksPerGrid, KernelType type, std::string name,int problemSize) {
+
+boost::shared_ptr<AbstractElasticKernel> makeElasticKernel(size_t threadsPerBlock, size_t blocksPerGrid, KernelType type, std::string name, int problemSize) {
 	LaunchParameters parameters = LaunchParameters(threadsPerBlock, blocksPerGrid);
 	AbstractElasticKernel* result;
 
 	if (type == 0) {
 
-		return boost::shared_ptr<AbstractElasticKernel>(new ElasticChunker(parameters, name,problemSize));
+		return boost::shared_ptr<AbstractElasticKernel>(new ElasticChunker(parameters, name, problemSize));
 	}
 	if (type == 1) {
-		return boost::shared_ptr<AbstractElasticKernel>(new ElasticBSPricer(parameters, name,problemSize));
+		return boost::shared_ptr<AbstractElasticKernel>(new ElasticBSPricer(parameters, name, problemSize));
 
 	}
 	if (type == 2) {
-		return boost::shared_ptr<AbstractElasticKernel>(new ElasticScalarProduct(parameters, name,problemSize));
+		return boost::shared_ptr<AbstractElasticKernel>(new ElasticScalarProduct(parameters, name, problemSize));
 
 	}
 	if (type == 3) {
-		return boost::shared_ptr<AbstractElasticKernel>(new ElasticVectorAddition(parameters, name,problemSize));
+		return boost::shared_ptr<AbstractElasticKernel>(new ElasticVectorAddition(parameters, name, problemSize));
 
 	}
 	if (type == 4) {
-		return boost::shared_ptr<AbstractElasticKernel>(new ElasticMatrixMultiplication(parameters, name,problemSize));
+		return boost::shared_ptr<AbstractElasticKernel>(new ElasticMatrixMultiplication(parameters, name, problemSize));
 
 	}
 
