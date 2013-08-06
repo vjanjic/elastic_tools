@@ -1,6 +1,8 @@
 /**
  * ElasticKernelMaker.h
  *
+ * This is a simple factory for elastic kernels
+ *
  *  Created on: Jul 30, 2013
  *      Author: Zahari Dichev <zaharidichev@gmail.com>
  */
@@ -23,7 +25,16 @@ enum KernelType {
 	CHUNKING, BLACK_SCHOLES, SCALAR_PRODUCT, VECTOR_ADD, MATRIX_MULT
 };
 
-
+/**
+ * Returns a shared pointer to an elastic kernel depending on the type requested and the configuration needed.
+ *
+ * @param threadsPerBlock
+ * @param blocksPerGrid
+ * @param type
+ * @param name
+ * @param problemSize
+ * @return
+ */
 boost::shared_ptr<AbstractElasticKernel> makeElasticKernel(size_t threadsPerBlock, size_t blocksPerGrid, KernelType type, std::string name, int problemSize) {
 	LaunchParameters parameters = LaunchParameters(threadsPerBlock, blocksPerGrid);
 	AbstractElasticKernel* result;

@@ -7,6 +7,8 @@
 
 #include "AbstractElasticKernel.hpp"
 
+//really nothing complicated here..
+
 AbstractElasticKernel::AbstractElasticKernel() {
 	LaunchParameters newParams = LaunchParameters();
 	this->gridConfig = newParams;
@@ -19,11 +21,6 @@ AbstractElasticKernel::AbstractElasticKernel(const LaunchParameters& gridConfig,
 }
 
 AbstractElasticKernel::~AbstractElasticKernel() {
-}
-
-void AbstractElasticKernel::setLaunchlParams(const LaunchParameters& gridConfig) {
-	this->gridConfig = gridConfig;
-
 }
 
 LaunchParameters AbstractElasticKernel::getLaunchParams() {

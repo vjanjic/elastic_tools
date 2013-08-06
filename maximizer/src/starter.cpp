@@ -310,87 +310,6 @@ void addKernelsToScheduler(KernelScheduler& schl) {
 
 }
 
-/*double runFairExperiment(int itters) {
- double avg = 0;
- double N = (double) itters;
- for (int var = 0; var < itters; ++var) {
- KernelScheduler scheduler;
- addKernelsToScheduler2(scheduler);
-
- avg = avg + scheduler.runKernels(FAIR);
-
- }
- return avg / N;
- }
-
- double runMaxOccupancyExperiment(int itters) {
- double avg = 0;
- double N = (double) itters;
- for (int var = 0; var < itters; ++var) {
-
- KernelScheduler scheduler;
- addKernelsToScheduler2(scheduler);
-
- avg = avg + scheduler.runKernels(MAXIMUM_OCCUPANCY);
- }
- return avg / N;
- }
-
- double runMaxConcurencyExperiment(int itters) {
- double avg = 0;
- double N = (double) itters;
- for (int var = 0; var < itters; ++var) {
- KernelScheduler scheduler;
- addKernelsToScheduler2(scheduler);
-
- avg = avg + scheduler.runKernels(MAXIMUM_CONCURENCY);
- }
- return avg / N;
- }
-
- double runMinQueuesExperiment(int itters) {
- double avg = 0;
- double N = (double) itters;
- for (int var = 0; var < itters; ++var) {
- KernelScheduler scheduler;
- addKernelsToScheduler2(scheduler);
- avg = avg + scheduler.runKernels(MINIMUM_QUEUES);
- }
- return avg / N;
- }
-
-
-
- double runNativeExperiment(int itters) {
- double avg = 0;
- double N = (double) itters;
- for (int var = 0; var < itters; ++var) {
- KernelScheduler scheduler;
- addKernelsToScheduler2(scheduler);
- avg = avg + scheduler.runKernels(NATIVE);
- }
- return avg / N;
- }
-
- void _generateCombinations(int offset, int k, std::vector<int> &combination, std::vector<int>& elems, std::vector<std::vector<int> >& results) {
- if (k == 0) {
- results.push_back(combination);
- return;
- }
- for (int i = offset; i <= elems.size() - k; ++i) {
- combination.push_back(elems[i]);
- _generateCombinations(i + 1, k - 1, combination, elems, results);
- combination.pop_back();
- }
- }*/
-
-/*std::vector<std::vector<int> > makeCombinations(std::vector<int> elems, int combinationSize) {
- std::vector<int> comb;
- std::vector<std::vector<int> > results;
- _generateCombinations(0, combinationSize, comb, elems, results);
- return results;
- }*/
-
 double RunExperimentWithPolicy(OptimizationPolicy policy, int samples) {
 	double avg = 0;
 	double N = (double) samples;
@@ -441,11 +360,11 @@ void printOptimisationPolicyDetails() {
 }
 
 void runAllPolicies(int samples) {
-	//std::cout << "native: " << RunExperimentWithPolicy(NATIVE, samples) << std::endl;
-	//std::cout << "fair: " << RunExperimentWithPolicy(FAIR, samples) << std::endl;
-	//std::cout << "fair_max_occ: " << RunExperimentWithPolicy(FAIR_MAXIMUM_OCCUPANCY, samples) << std::endl;
-	//std::cout << "min_queues: " << RunExperimentWithPolicy(MINIMUM_QUEUES, samples) << std::endl;
-	//std::cout << "min_queues_max_occ: " << RunExperimentWithPolicy(MINIMUM_QUEUES_MAXIMUM_OCCUPANCY, samples) << std::endl;
+	std::cout << "native: " << RunExperimentWithPolicy(NATIVE, samples) << std::endl;
+	std::cout << "fair: " << RunExperimentWithPolicy(FAIR, samples) << std::endl;
+	std::cout << "fair_max_occ: " << RunExperimentWithPolicy(FAIR_MAXIMUM_OCCUPANCY, samples) << std::endl;
+	std::cout << "min_queues: " << RunExperimentWithPolicy(MINIMUM_QUEUES, samples) << std::endl;
+	std::cout << "min_queues_max_occ: " << RunExperimentWithPolicy(MINIMUM_QUEUES_MAXIMUM_OCCUPANCY, samples) << std::endl;
 	std::cout << "max_concurency: " << RunExperimentWithPolicy(MAXIMUM_CONCURENCY, samples) << std::endl;
 
 }
