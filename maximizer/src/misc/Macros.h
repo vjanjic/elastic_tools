@@ -7,7 +7,7 @@
 
 #ifndef MACROS_H_
 #define MACROS_H_
- #include <stdlib.h>
+#include <stdlib.h>
 
 /**
  * This macro checks return value of the CUDA runtime call and exits
@@ -32,15 +32,14 @@ inline void gpuAssert(cudaError_t code, char *file, int line, bool abort = true)
 
 inline cudaDeviceProp getGPUConfiguration() {
 	cudaDeviceProp props;
-	cudaGetDeviceProperties(&props,0);
+	cudaGetDeviceProperties(&props, 0);
 	return props;
 }
 
-inline double rnd(double min, double max)
-{
+inline double rnd(double min, double max) {
 
-    double f = (double)rand() / RAND_MAX;
-    return min + f * (max - min);
+	double f = (double) rand() / RAND_MAX;
+	return min + f * (max - min);
 }
 
 #endif /* MACROS_H_ */

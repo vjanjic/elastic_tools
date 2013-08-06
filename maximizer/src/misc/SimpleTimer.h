@@ -1,6 +1,9 @@
 /**
  * SimpleTimer.h
  *
+ * Just a simple timer that is used to time the experiements
+ *
+ *
  *  Created on: Aug 2, 2013
  *      Author: Zahari Dichev <zaharidichev@gmail.com>
  */

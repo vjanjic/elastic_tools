@@ -49,11 +49,6 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="com.nvidia.cuda.ide.configuration.debug.187919842.1497488050" name="Maximizer.hpp" rcbsApplicability="disable" resourcePath="src/misc/Maximizer.hpp" toolsToInvoke=""/>
-					<fileInfo id="com.nvidia.cuda.ide.configuration.debug.187919842.304056580" name="cuda_launch_config.hpp" rcbsApplicability="disable" resourcePath="src/misc/cuda_launch_config.hpp" toolsToInvoke=""/>
-					<fileInfo id="com.nvidia.cuda.ide.configuration.debug.187919842.2114560927" name="scratchpad.hpp" rcbsApplicability="disable" resourcePath="src/misc/scratchpad.hpp" toolsToInvoke=""/>
-					<fileInfo id="com.nvidia.cuda.ide.configuration.debug.187919842.1392573852" name="Elasticizer.hpp" rcbsApplicability="disable" resourcePath="src/misc/Elasticizer.hpp" toolsToInvoke=""/>
-					<fileInfo id="com.nvidia.cuda.ide.configuration.debug.187919842.1644937722" name="KernelUsageData.hpp" rcbsApplicability="disable" resourcePath="src/misc/KernelUsageData.hpp" toolsToInvoke=""/>
 					<sourceEntries>
 						<entry excluding="BlackScholes_elastic|elastic_launcher|ScalarProduct_elastic|occupancy_tools\|dummy_elastic|elastic_wrapper|elastic_kernel|src|occupancy_tools|misc|MatrixMultiplication_elastic|Chunking_elastic|wrapper_elastic|GPU_code|VectorAddition_elastic|cudaCode" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry excluding="misc/cuda_launch_config.hpp|elastic_spmv|misc/scratchpad.hpp|misc/Maximizer.hpp|misc/Elasticizer.hpp|misc/saxpy.cu|misc/KernelUsageData.hpp|occupancy_tools" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>

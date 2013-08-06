@@ -1,6 +1,13 @@
 /**
  * OccupancyLimits.hpp
  *
+ * This is a collection of functions which purpose is to calculate the maximum number of
+ * active thread blocks on a device, based on the characteristics of the GPU that is
+ * installed on the machine. The functions take into account the different ways that
+ * a version of the architecture handles resource allocations and therefore are safe for
+ * use with multiple models of NVidia cuda - enabled GPUs
+ *
+ *
  *  Created on: Jun 20, 2013
  *      Author: Zahari Dichev <zaharidichev@gmail.com>
  */
@@ -10,9 +17,20 @@
 #include "OccupancyUtils.h"
 #include <cuda_runtime.h>
 
-
-
-inline  size_t getRegisterLimit( const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps, size_t blockSize) {
+/**
+ * GIven the kernel properties , the device properties and the size of the block, this function
+ * returns the maximum number of active blocks of this particular configuration for the particular
+ * kernel per SM. This function take into consideration the limit that is imposed by the register count.
+ * The implementation takes into account the different ways resources are allocated for different
+ * architectures. This function should work properly no matter the GPU model.
+ *
+ * @param deviceProps the device properties
+ * @param kernelProps the kernel properties
+ * @param blockSize the size of the block
+ *
+ * @return the number of active blocks per SM
+ */
+inline size_t getRegisterLimit(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps, size_t blockSize) {
 	/*
 	 * Now we need to calculate the limits due to register pressure
 	 */
@@ -76,14 +94,21 @@ inline  size_t getRegisterLimit( const cudaDeviceProp &deviceProps, const cudaFu
 
 }
 
-inline   size_t getSharedMemLimit(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps) {
+/**
+ * The function returns the number of maximum active blocks per SM as limited
+ * by the amount of shared memory of the GPU
+ *
+ * @param deviceProps the device properties
+ * @param kernelProps the kernel properties
+ * @return max number of active blocks per SM
+ */
+inline size_t getSharedMemLimit(const cudaDeviceProp &deviceProps, const cudaFuncAttributes &kernelProps) {
 
 	/*
 	 * Now we need to consider how many blocks can we really have active due to the limit of our shared memory that is requested.
 	 */
 
-
-	size_t sharedMemoryNeeded = getSharedMemNeeded(kernelProps,deviceProps);
+	size_t sharedMemoryNeeded = getSharedMemNeeded(kernelProps, deviceProps);
 
 	size_t maxBlocksSMLimit = 0; // now we are ready to check out limit posed by shared memory
 	if (sharedMemoryNeeded > 0) {
@@ -96,7 +121,16 @@ inline   size_t getSharedMemLimit(const cudaDeviceProp &deviceProps, const cudaF
 	return maxBlocksSMLimit;
 }
 
-inline  size_t getHardwareLimit(const cudaDeviceProp &deviceProps, size_t blockSize) {
+/**
+ * The function returns the maximum number of active blocks per SM as limited by the
+ * hardware details of the device. Again this function takes into account different
+ * architecture and works despite the device model
+ *
+ * @param deviceProps the device properties
+ * @param blockSize the kernel properties
+ * @return the maximum number of active blocks per SM
+ */
+inline size_t getHardwareLimit(const cudaDeviceProp &deviceProps, size_t blockSize) {
 	/*
 	 * First we start by examining the actual hardware limits
 	 * of the GPU with respect to maximum active blocks of
@@ -105,7 +139,6 @@ inline  size_t getHardwareLimit(const cudaDeviceProp &deviceProps, size_t blockS
 
 	// we first need the maximum number of resident threads per SM
 	size_t maximumThreadsPerMultiprocessor = deviceProps.maxThreadsPerMultiProcessor;
-
 
 	/*we also determine the maximum resident blocks per SM. On
 	 *architectures that are newer than 2.0 CC, we have 16 maximum
@@ -117,7 +150,6 @@ inline  size_t getHardwareLimit(const cudaDeviceProp &deviceProps, size_t blockS
 	 * now we simply need to obtain the limit active blocks per SM with
 	 * respect to those initial hardware considerations
 	 */
-
 
 	size_t threadCountLimit = 0;
 	if (blockSize > deviceProps.maxThreadsPerBlock) {
