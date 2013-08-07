@@ -9,6 +9,7 @@
  *
  */
 #include "Kernel_Starter_BS.h"
+#include <helper_cuda.h>        // helper functions CUDA error checking and initialization
 
 ///////////////////////////////////////////////////////////////////////////////
 // Polynomial approximation of cumulative normal distribution function
@@ -66,7 +67,7 @@ __global__ void BlackScholesGPU(float *d_CallResult, float *d_PutResult, float *
 	////Total number of threads in execution grid
 	const int THREAD_N = blockDim.x * gridDim.x;
 
-	const int opt = blockDim.x * blockIdx.x + threadIdx.x;
+	//const int opt = blockDim.x * blockIdx.x + threadIdx.x;
 
 	//No matter how small is execution grid or how large OptN is,
 	//exactly OptN indices will be processed with perfect memory coalescing

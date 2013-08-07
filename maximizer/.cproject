@@ -37,7 +37,7 @@
 								<inputType id="nvcc.compiler.input.c.211168412" superClass="nvcc.compiler.input.c"/>
 							</tool>
 							<tool id="nvcc.linker.base.193659162" name="NVCC Linker" superClass="nvcc.linker.base">
-								<option id="nvcc.linker.option.libs.1174003535" name="Libraries (-l)" superClass="nvcc.linker.option.libs" valueType="libs"/>
+								<option id="nvcc.linker.option.libs.1174003535" name="Libraries (-l)" superClass="nvcc.linker.option.libs"/>
 								<inputType id="nvcc.linker.input.1675884871" superClass="nvcc.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -49,9 +49,12 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="com.nvidia.cuda.ide.configuration.debug.187919842.1761633422" name="scalarProd_cpu.cpp" rcbsApplicability="disable" resourcePath="src/ScalarProduct_elastic/GPU_code/scalarProd_cpu.cpp" toolsToInvoke="nvcc.compiler.base.1445604049.1462113890">
+						<tool id="nvcc.compiler.base.1445604049.1462113890" name="NVCC Compiler" superClass="nvcc.compiler.base.1445604049"/>
+					</fileInfo>
 					<sourceEntries>
 						<entry excluding="BlackScholes_elastic|elastic_launcher|ScalarProduct_elastic|occupancy_tools\|dummy_elastic|elastic_wrapper|elastic_kernel|src|occupancy_tools|misc|MatrixMultiplication_elastic|Chunking_elastic|wrapper_elastic|GPU_code|VectorAddition_elastic|cudaCode" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="misc/cuda_launch_config.hpp|elastic_spmv|misc/scratchpad.hpp|misc/Maximizer.hpp|misc/Elasticizer.hpp|misc/saxpy.cu|misc/KernelUsageData.hpp|occupancy_tools" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="ScalarProduct_elastic/GPU_code/scalarProd_cpu.cpp|BlackScholes_elastic/GPU_code/BlackScholes.cu|BlackScholes_elastic/GPU_code/BlackScholes_gold.cpp|ScalarProduct_elastic/GPU_code/scalarProd.cu|misc/cuda_launch_config.hpp|elastic_spmv|misc/scratchpad.hpp|misc/Maximizer.hpp|misc/Elasticizer.hpp|misc/saxpy.cu|misc/KernelUsageData.hpp|occupancy_tools" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

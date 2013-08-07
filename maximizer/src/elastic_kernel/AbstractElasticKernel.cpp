@@ -13,11 +13,13 @@ AbstractElasticKernel::AbstractElasticKernel() {
 	LaunchParameters newParams = LaunchParameters();
 	this->gridConfig = newParams;
 	this->name = "n/a";
+	this->memConsumption = 0;
 }
 
 AbstractElasticKernel::AbstractElasticKernel(const LaunchParameters& gridConfig, std::string name) {
 	this->gridConfig = gridConfig;
 	this->name = name;
+	this->memConsumption = 0;
 }
 
 AbstractElasticKernel::~AbstractElasticKernel() {

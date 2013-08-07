@@ -2,7 +2,7 @@
  * OccupancyData.hpp
  *
  *	This file contains two classes that are used in the process of tweaking kernel launch parameters
- *	in order to fit in particular ahrdware limitations.
+ *	in order to fit in particular hardware limitations.
  *
  *
  *  Created on: Jun 20, 2013

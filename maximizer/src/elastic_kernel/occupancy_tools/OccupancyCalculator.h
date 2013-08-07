@@ -1,6 +1,14 @@
 /**
  * OccupancyCalculator.hpp
  *
+ *
+ * This file contains functions, which purpose is to determine maximum occupancy
+ * for particular kernels on particular GPU configuration. Most of this involves
+ * calculations that are described in the NVIDIA hardware implementation guide.
+ *
+ *
+ *
+ *
  *  Created on: Jun 20, 2013
  *      Author: Zahari Dichev <zaharidichev@gmail.com>
  */
@@ -39,7 +47,7 @@ inline cudaDeviceProp getGPUProperties() {
  *
  * @param deviceProps the properties of the device
  * @param kernelProps the properties of the kernel
- * @param blockSize the blocksize of the kernel
+ * @param blockSize the block size of the kernel
  *
  * @return maximum active blocks per SM
  */
