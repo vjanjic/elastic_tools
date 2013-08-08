@@ -10,13 +10,13 @@
 #ifndef ELASTICKERNELMAKER_H_
 #define ELASTICKERNELMAKER_H_
 
-#include "../elastic_kernel/LaunchParameters.hpp"
-#include "../elastic_kernel/AbstractElasticKernel.hpp"
-#include "../Chunking_elastic/elastic_wrapper/ElasticChunker.h"
-#include "../BlackScholes_elastic/elastic_wrapper/ElasticBSPricer.h"
-#include "../ScalarProduct_elastic/elastic_wrapper/ElasticScalarProduct.h"
-#include "../VectorAddition_elastic/elastic_wrapper/ElasticVectorAddition.h"
-#include "../MatrixMultiplication_elastic/elastic_wrapper/ElasticMatrixMultiplication.h"
+#include "../abstract_elastic_kernel/LaunchParameters.hpp"
+#include "../abstract_elastic_kernel/AbstractElasticKernel.hpp"
+#include "../concrete_elastic_kernels/Chunking_elastic/elastic_wrapper/ElasticChunker.h"
+#include "../concrete_elastic_kernels/BlackScholes_elastic/elastic_wrapper/ElasticBSPricer.h"
+#include "../concrete_elastic_kernels/ScalarProduct_elastic/elastic_wrapper/ElasticScalarProduct.h"
+#include "../concrete_elastic_kernels/VectorAddition_elastic/elastic_wrapper/ElasticVectorAddition.h"
+#include "../concrete_elastic_kernels/MatrixMultiplication_elastic/elastic_wrapper/ElasticMatrixMultiplication.h"
 #include <boost/shared_ptr.hpp>
 
 #include "string.h"

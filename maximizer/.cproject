@@ -49,12 +49,9 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="com.nvidia.cuda.ide.configuration.debug.187919842.1761633422" name="scalarProd_cpu.cpp" rcbsApplicability="disable" resourcePath="src/ScalarProduct_elastic/GPU_code/scalarProd_cpu.cpp" toolsToInvoke="nvcc.compiler.base.1445604049.1462113890">
-						<tool id="nvcc.compiler.base.1445604049.1462113890" name="NVCC Compiler" superClass="nvcc.compiler.base.1445604049"/>
-					</fileInfo>
 					<sourceEntries>
-						<entry excluding="BlackScholes_elastic|elastic_launcher|ScalarProduct_elastic|occupancy_tools\|dummy_elastic|elastic_wrapper|elastic_kernel|src|occupancy_tools|misc|MatrixMultiplication_elastic|Chunking_elastic|wrapper_elastic|GPU_code|VectorAddition_elastic|cudaCode" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="ScalarProduct_elastic/GPU_code/scalarProd_cpu.cpp|BlackScholes_elastic/GPU_code/BlackScholes.cu|BlackScholes_elastic/GPU_code/BlackScholes_gold.cpp|ScalarProduct_elastic/GPU_code/scalarProd.cu|misc/cuda_launch_config.hpp|elastic_spmv|misc/scratchpad.hpp|misc/Maximizer.hpp|misc/Elasticizer.hpp|misc/saxpy.cu|misc/KernelUsageData.hpp|occupancy_tools" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="src" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -110,24 +107,25 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="MatrixMultiplication_elastic|VectorAddition_elastic|ScalarProduct_elastic|BlackScholes_elastic|wrapper_elastic|elastic_wrapper|GPU_code|Chunking_elastic|elastic_launcher|cudaCode|misc|dummy_elastic|elastic_kernel|occupancy_tools\|occupancy_tools|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="MatrixMultiplication_elastic|VectorAddition_elastic|ScalarProduct_elastic|BlackScholes_elastic|Chunking_elastic|elastic_launcher|misc|dummy_elastic|elastic_spmv|elastic_kernel|occupancy_tools" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
-						<entry excluding="elastic_wrapper|GPU_code" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/BlackScholes_elastic"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/BlackScholes_elastic/GPU_code"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/BlackScholes_elastic/elastic_wrapper"/>
-						<entry excluding="wrapper_elastic|elastic_wrapper|GPU_code" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/Chunking_elastic"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/Chunking_elastic/GPU_code"/>
-						<entry excluding="GPU_code" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/MatrixMultiplication_elastic"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/MatrixMultiplication_elastic/GPU_code"/>
-						<entry excluding="elastic_wrapper" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/ScalarProduct_elastic"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/ScalarProduct_elastic/elastic_wrapper"/>
-						<entry excluding="elastic_wrapper|GPU_code" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/VectorAddition_elastic"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/VectorAddition_elastic/GPU_code"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/VectorAddition_elastic/elastic_wrapper"/>
-						<entry excluding="occupancy_tools" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/elastic_kernel"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/elastic_kernel/occupancy_tools"/>
+						<entry excluding="BlackScholes_elastic|abstract_elastic_kernel|elastic_launcher|ScalarProduct_elastic|occupancy_tools\|dummy_elastic|elastic_wrapper|src|occupancy_tools|misc|MatrixMultiplication_elastic|Chunking_elastic|concrete_elastic_kernels|VectorAddition_elastic|wrapper_elastic|GPU_code|cudaCode" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="elastic_kernel/occupancy_tools|BlackScholes_elastic|MatrixMultiplication_elastic|Chunking_elastic|abstract_elastic_kernel|elastic_spmv|elastic_launcher|ScalarProduct_elastic|VectorAddition_elastic|concrete_elastic_kernels|dummy_elastic|occupancy_tools|misc" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="occupancy_tools" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/abstract_elastic_kernel"/>
+						<entry excluding="VectorAddition_elastic/GPU_code|BlackScholes_elastic|MatrixMultiplication_elastic|Chunking_elastic|BlackScholes_elastic/elastic_wrapper|Chunking_elastic/GPU_code|ScalarProduct_elastic|VectorAddition_elastic|ScalarProduct_elastic/elastic_wrapper" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/concrete_elastic_kernels"/>
+						<entry excluding="GPU_code|elastic_wrapper" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/concrete_elastic_kernels/BlackScholes_elastic"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/concrete_elastic_kernels/BlackScholes_elastic/GPU_code"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/concrete_elastic_kernels/BlackScholes_elastic/elastic_wrapper"/>
+						<entry excluding="GPU_code|wrapper_elastic|elastic_wrapper" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/concrete_elastic_kernels/Chunking_elastic"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/concrete_elastic_kernels/Chunking_elastic/GPU_code"/>
+						<entry excluding="GPU_code" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/concrete_elastic_kernels/MatrixMultiplication_elastic"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/concrete_elastic_kernels/MatrixMultiplication_elastic/GPU_code"/>
+						<entry excluding="elastic_wrapper" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/concrete_elastic_kernels/ScalarProduct_elastic"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/concrete_elastic_kernels/ScalarProduct_elastic/elastic_wrapper"/>
+						<entry excluding="GPU_code|elastic_wrapper" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/concrete_elastic_kernels/VectorAddition_elastic"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/concrete_elastic_kernels/VectorAddition_elastic/GPU_code"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/concrete_elastic_kernels/VectorAddition_elastic/elastic_wrapper"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/elastic_launcher"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/misc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/occupancy_tools"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

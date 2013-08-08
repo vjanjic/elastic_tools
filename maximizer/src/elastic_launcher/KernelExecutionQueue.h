@@ -4,7 +4,7 @@
  * This class is an implementation of a non serializing execution queue which purpose is to launch CUDA
  * kernels while avoiding implicit serialization caused by calls to the NVIDIA API. For that reason all
  * allocation of resources and their disposal is done at bulk before and after all kernels are launched.
- * In addition to that each kernel added to the queue is assigned a separate cuda stream to run in in order
+ * In addition to that each kernel added to the queue is assigned a separate CUDA stream to run in in order
  * to promote concurrency. This data structure can hold any number of kernels as long as their total global
  * GPU memory consumption does not exceed the amount available on the particular GPU that is installed on the
  * system. In addition to that the queue supports other methods for optimization such as maximum concurrency
@@ -20,9 +20,9 @@
 
 #include <vector>
 #include <boost/shared_ptr.hpp>
-#include "../elastic_kernel/AbstractElasticKernel.hpp"
+#include "../abstract_elastic_kernel/AbstractElasticKernel.hpp"
 #include "../misc/Macros.h"
-#include "../elastic_kernel/occupancy_tools/OccupancyCalculator.h"
+#include "../occupancy_tools/OccupancyCalculator.h"
 #include <cmath>
 
 struct ConcurencyVectorComparator {

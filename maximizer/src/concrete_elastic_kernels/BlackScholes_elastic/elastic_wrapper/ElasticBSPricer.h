@@ -7,8 +7,8 @@
 
 #ifndef ELASTICBSPRICER_H_
 #define ELASTICBSPRICER_H_
-#include "../../elastic_kernel/AbstractElasticKernel.hpp"
-#include "../../misc/Macros.h"
+#include "../../../abstract_elastic_kernel/AbstractElasticKernel.hpp"
+#include "../../../misc/Macros.h"
 #include "../GPU_code/Kernel_Starter_BS.h"
 
 #include <stdio.h>

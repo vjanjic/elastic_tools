@@ -9,13 +9,12 @@
 
 ElasticChunker::ElasticChunker() :
 		AbstractElasticKernel(), dataSize(67108864), rabinData_d(0), dataBuffer_d(0), results_d(0) {
-this->memConsumption = (sizeof(BYTE) * dataSize) + sizeof(rabinData) + (getSizeOfBitArray(dataSize) * 4);
+	this->memConsumption = (sizeof(BYTE) * dataSize) + sizeof(rabinData) + (getSizeOfBitArray(dataSize) * 4);
 }
 
-ElasticChunker::ElasticChunker(LaunchParameters &launchConfig, std::string name,int dataSize) :
-		AbstractElasticKernel(launchConfig,name), dataSize(dataSize), rabinData_d(0), dataBuffer_d(0), results_d(0) {
+ElasticChunker::ElasticChunker(LaunchParameters &launchConfig, std::string name, int dataSize) :
+		AbstractElasticKernel(launchConfig, name), dataSize(dataSize), rabinData_d(0), dataBuffer_d(0), results_d(0) {
 	this->memConsumption = (sizeof(BYTE) * dataSize) + sizeof(rabinData) + (getSizeOfBitArray(dataSize) * 16);
-
 
 }
 
@@ -45,8 +44,6 @@ void ElasticChunker::initKernel() {
 	free(hostBuffer);
 }
 
-
-
 cudaFuncAttributes ElasticChunker::getKernelProperties() {
 	return getChunkingKernelProperties();
 }
@@ -56,10 +53,8 @@ void ElasticChunker::runKernel(cudaStream_t& streamToRunIn) {
 
 	size_t workPerThread = this->dataSize / totalNumThreads;
 
-
-
 	startCreateBreakpointsKernel(gridConfig.getThreadsPerBlock(), gridConfig.getBlocksPerGrid(), this->rabinData_d, this->dataBuffer_d, dataSize,
-			this->results_d, totalNumThreads, workPerThread, 512,streamToRunIn);
+			this->results_d, totalNumThreads, workPerThread, 512, streamToRunIn);
 }
 
 size_t ElasticChunker::getMemoryConsumption() {

@@ -5,7 +5,7 @@
  * active thread blocks on a device, based on the characteristics of the GPU that is
  * installed on the machine. The functions take into account the different ways that
  * a version of the architecture handles resource allocations and therefore are safe for
- * use with multiple models of NVidia cuda - enabled GPUs
+ * use with multiple models of NVidia CUDA - enabled GPUs
  *
  *
  *  Created on: Jun 20, 2013

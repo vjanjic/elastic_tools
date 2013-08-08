@@ -6,7 +6,7 @@
  */
 
 #include "stdio.h"
-#include "../../misc/Macros.h"
+#include "../../../misc/Macros.h"
 #define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
 
 inline __device__ int getID() {

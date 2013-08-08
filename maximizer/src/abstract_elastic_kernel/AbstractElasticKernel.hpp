@@ -14,7 +14,7 @@
 #ifndef ABSTRACTELASTICKERNEL_HPP_
 #define ABSTRACTELASTICKERNEL_HPP_
 
-#include  "../elastic_kernel/occupancy_tools/OccupancyData.h"
+#include  "../occupancy_tools/OccupancyData.h"
 #include "LaunchParameters.hpp"
 #include "stdint.h"
 #include <iostream>

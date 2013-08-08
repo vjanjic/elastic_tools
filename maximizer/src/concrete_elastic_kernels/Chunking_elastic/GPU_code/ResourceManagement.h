@@ -11,7 +11,7 @@
  */
 
 #include <stdio.h>
-#include "../../misc/Macros.h"
+#include "../../../misc/Macros.h"
 #include "cuda_runtime.h"
 #include "rabin_fingerprint/RabinFingerprint.h"
 #ifndef FUNKYFUNKS_H_

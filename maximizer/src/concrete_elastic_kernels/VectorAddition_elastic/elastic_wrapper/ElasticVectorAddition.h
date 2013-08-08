@@ -8,8 +8,8 @@
 #ifndef ELASTICVECTORADDITION_H_
 #define ELASTICVECTORADDITION_H_
 
-#include "../../elastic_kernel/AbstractElasticKernel.hpp"
-#include "../../misc/Macros.h"
+#include "../../../abstract_elastic_kernel/AbstractElasticKernel.hpp"
+#include "../../../misc/Macros.h"
 #include "../GPU_code/Kernel_Starter_VA.h"
 
 class ElasticVectorAddition: public AbstractElasticKernel {

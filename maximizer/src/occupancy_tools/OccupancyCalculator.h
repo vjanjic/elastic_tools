@@ -20,7 +20,7 @@
 #include <cuda_runtime.h>
 #include <iostream>
 #include <cmath>
-#include "../AbstractElasticKernel.hpp"
+#include "../abstract_elastic_kernel/AbstractElasticKernel.hpp"
 #include <boost/shared_ptr.hpp>
 
 struct OccupancyInformation {
@@ -223,7 +223,7 @@ inline double getMemoryOccupancyForKernel(boost::shared_ptr<AbstractElasticKerne
 inline size_t getOptimalBlockSize(boost::shared_ptr<AbstractElasticKernel> kernel) {
 
 	cudaDeviceProp gpuConfiguration = getGPUProperties();
-	size_t max_occupancy = gpuConfiguration.maxThreadsPerMultiProcessor;
+	size_t maxOccupancy = gpuConfiguration.maxThreadsPerMultiProcessor;
 	size_t largestThrNum = min2(kernel.get()->getKernelProperties().maxThreadsPerBlock, gpuConfiguration.maxThreadsPerMultiProcessor);
 	size_t threadGranularity = gpuConfiguration.warpSize;
 
@@ -243,7 +243,7 @@ inline size_t getOptimalBlockSize(boost::shared_ptr<AbstractElasticKernel> kerne
 		}
 
 		// early out, can't do better
-		if (highestOcc == max_occupancy)
+		if (highestOcc == maxOccupancy)
 			break;
 	}
 	//printf("Blocksize %d\n", highestOcc);

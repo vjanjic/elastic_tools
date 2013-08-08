@@ -18,9 +18,9 @@
 #include <iostream>
 
 #include <boost/shared_ptr.hpp>
-#include "../elastic_kernel/AbstractElasticKernel.hpp"
+#include "../abstract_elastic_kernel/AbstractElasticKernel.hpp"
 #include "KernelExecutionQueue.h"
-#include "../elastic_kernel/occupancy_tools/OccupancyCalculator.h"
+#include "../occupancy_tools/OccupancyCalculator.h"
 #include "cuda_runtime.h"
 #include "../misc/SimpleTimer.h"
 

@@ -15,7 +15,7 @@
 #include "BitFieldArray.h"
 #include <iostream>
 #include <fstream>      // std::ifstream
-#include "../../misc/Macros.h"
+#include "../../../misc/Macros.h"
 
 #include "openssl/sha.h"
 

@@ -8,12 +8,13 @@
 #ifndef ELASTICCHUNKER_H_
 #define ELASTICCHUNKER_H_
 
-#include "../../elastic_kernel/AbstractElasticKernel.hpp"
+#include "../../../abstract_elastic_kernel/AbstractElasticKernel.hpp"
 #include "../GPU_code/KernelStarter_CS.h"
 #include "../GPU_code/rabin_fingerprint/RabinFingerprint.h"
 #include "../GPU_code/ResourceManagement.h"
 #include <stdio.h>
 #include <cuda_runtime.h>
+#include <driver_types.h>
 
 
 class ElasticChunker: public AbstractElasticKernel {

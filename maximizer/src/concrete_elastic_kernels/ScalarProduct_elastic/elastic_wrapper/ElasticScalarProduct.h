@@ -8,8 +8,8 @@
 
 #ifndef ELASTICSCALARPRODUCT_H_
 #define ELASTICSCALARPRODUCT_H_
-#include "../../elastic_kernel/AbstractElasticKernel.hpp"
-#include "../../misc/Macros.h"
+#include "../../../abstract_elastic_kernel/AbstractElasticKernel.hpp"
+#include "../../../misc/Macros.h"
 #include "../GPU_code/Kernel_Starter_SP.h"
 class ElasticScalarProduct: public AbstractElasticKernel {
 

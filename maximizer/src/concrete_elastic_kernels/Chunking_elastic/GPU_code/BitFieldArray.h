@@ -15,7 +15,7 @@
 #ifndef BITFIELDARRAY_H_
 #define BITFIELDARRAY_H_
 #include "cuda_runtime.h"
-#include "../../misc/Macros.h"
+#include "../../../misc/Macros.h"
 #include "stdio.h"
 #include "boost/shared_ptr.hpp"
 
