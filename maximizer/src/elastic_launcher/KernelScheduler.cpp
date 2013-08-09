@@ -35,6 +35,7 @@ void KernelScheduler::optimiseQueuesForMaximumConcurency() {
 	// iterate though all the created queues and call their member method for molding or maximum concurency.
 	// All the details around that are handled within the execution queue itself
 	for (std::vector<KernelExecutionQueue>::iterator it = this->kernelQueues.begin(); it != this->kernelQueues.end(); ++it) {
+
 		(*it).moldQueueForMaximumConcurency();
 	}
 
@@ -42,13 +43,17 @@ void KernelScheduler::optimiseQueuesForMaximumConcurency() {
 
 void KernelScheduler::orderKernelsInQueues_FAIR_() {
 	this->kernelQueues.push_back(KernelExecutionQueue()); // create a new queue
+
 	for (std::vector<boost::shared_ptr<AbstractElasticKernel> >::iterator it = this->kernelsToRun.begin(); it != this->kernelsToRun.end(); ++it) {
 		// iterate through all the kernels
+		//std::cout << "HO HO HO " << std::endl;;
+
 		if (!(this->kernelQueues.back().addKernel(*it))) {
 			// try and add the kernel to the last queue;
 			// if it does not fit, simply create a new queue
 			this->kernelQueues.push_back(KernelExecutionQueue());
 			--it;
+
 		}
 
 	}
@@ -95,7 +100,9 @@ void KernelScheduler::applyOptimisationPolicy(OptimizationPolicy policy) {
 
 	if (policy == 1) {
 		//FAIR
+
 		this->orderKernelsInQueues_FAIR_();
+
 	}
 	if (policy == 2) {
 		//FAIR maximum occupancy
@@ -115,8 +122,11 @@ void KernelScheduler::applyOptimisationPolicy(OptimizationPolicy policy) {
 	}
 
 	if (policy == 5) {
+
+
 		// all the above + concurency optimization
 		this->moldKernels_MAXIMUM_OCCUPANCY_();
+
 		this->orderKernelsInQueues_MINIMUM_QUEUES_();
 		this->optimiseQueuesForMaximumConcurency();
 
@@ -179,10 +189,10 @@ KernelScheduler::~KernelScheduler() {
 }
 
 GPUUtilization KernelScheduler::getGPUOccupancyForPolicy(OptimizationPolicy policy) {
+
 	GPUUtilization result;
 	result.averageComputeOccupancy = 0;
 	result.averageStorageOccupancy = 0;
-
 	if (policy == 0) {
 		//if native policy
 		for (std::vector<boost::shared_ptr<AbstractElasticKernel> >::iterator it = this->kernelsToRun.begin(); it != this->kernelsToRun.end(); ++it) {
@@ -194,6 +204,7 @@ GPUUtilization KernelScheduler::getGPUOccupancyForPolicy(OptimizationPolicy poli
 		result.averageStorageOccupancy = result.averageStorageOccupancy / (double) this->kernelsToRun.size();
 		return result;
 	} else {
+
 		// if not compute for every queue
 		this->applyOptimisationPolicy(policy);
 

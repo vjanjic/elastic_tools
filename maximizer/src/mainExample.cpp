@@ -32,7 +32,7 @@ double RunExperimentWithPolicy(OptimizationPolicy policy, int samples) {
 	double N = (double) samples;
 	for (int var = 0; var < samples; ++var) {
 		KernelScheduler scheduler;
-		addKernelsToScheduler(scheduler);
+		addChunkingKernelsToScheduler(scheduler);
 		avg = avg + scheduler.runKernels(policy);
 	}
 	return avg / N;
@@ -48,9 +48,11 @@ double RunExperimentWithPolicy(OptimizationPolicy policy, int samples) {
 void printGPUUtilisationForPolicy(OptimizationPolicy policy) {
 
 	KernelScheduler schl = KernelScheduler();
-	addKernelsToScheduler(schl);
+
+	addChunkingKernelsToScheduler(schl);
 
 	GPUUtilization ut1 = schl.getGPUOccupancyForPolicy(policy);
+
 	printf("Compute Occupancy: %.6f              |\n", ut1.averageComputeOccupancy);
 	printf("Storage Occupancy: %.6f              |\n", ut1.averageStorageOccupancy);
 
@@ -94,11 +96,11 @@ void printOptimisationPolicyDetails() {
  */
 void runAllPolicies(int samples) {
 	std::cout << "native: " << RunExperimentWithPolicy(NATIVE, samples) << std::endl;
-	std::cout << "fair: " << RunExperimentWithPolicy(FAIR, samples) << std::endl;
-	std::cout << "fair_max_occ: " << RunExperimentWithPolicy(FAIR_MAXIMUM_OCCUPANCY, samples) << std::endl;
-	std::cout << "min_queues: " << RunExperimentWithPolicy(MINIMUM_QUEUES, samples) << std::endl;
-	std::cout << "min_queues_max_occ: " << RunExperimentWithPolicy(MINIMUM_QUEUES_MAXIMUM_OCCUPANCY, samples) << std::endl;
-	std::cout << "max_concurency: " << RunExperimentWithPolicy(MAXIMUM_CONCURENCY, samples) << std::endl;
+	//std::cout << "fair: " << RunExperimentWithPolicy(FAIR, samples) << std::endl;
+	//std::cout << "fair_max_occ: " << RunExperimentWithPolicy(FAIR_MAXIMUM_OCCUPANCY, samples) << std::endl;
+	//std::cout << "min_queues: " << RunExperimentWithPolicy(MINIMUM_QUEUES, samples) << std::endl;
+	//std::cout << "min_queues_max_occ: " << RunExperimentWithPolicy(MINIMUM_QUEUES_MAXIMUM_OCCUPANCY, samples) << std::endl;
+	//std::cout << "max_concurency: " << RunExperimentWithPolicy(MAXIMUM_CONCURENCY, samples) << std::endl;
 
 }
 
@@ -109,14 +111,14 @@ void runAllPolicies(int samples) {
  */
 void printQueueConfigurationForPolicy(OptimizationPolicy policy) {
 	KernelScheduler schl = KernelScheduler();
-	addKernelsToScheduler(schl);
+	addChunkingKernelsToScheduler(schl);
 	schl.getGPUOccupancyForPolicy(policy);
 	std::cout << schl << std::endl;
 }
 
 int main() {
-	printQueueConfigurationForPolicy(MINIMUM_QUEUES);
+	////printQueueConfigurationForPolicy(FAIR);
 	printOptimisationPolicyDetails();
-
+	//runAllPolicies(1);
 }
 

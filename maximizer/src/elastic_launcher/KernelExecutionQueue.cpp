@@ -172,25 +172,26 @@ void KernelExecutionQueue::disposeQueue() {
 }
 
 void KernelExecutionQueue::moldQueueForMaximumConcurency() {
+	if (this->kernelsAndStreams.size() > 1) {
+		std::vector<boost::shared_ptr<AbstractElasticKernel> > kernels;
 
-	std::vector<boost::shared_ptr<AbstractElasticKernel> > kernels;
+		for (std::vector<std::pair<boost::shared_ptr<AbstractElasticKernel>, cudaStream_t> >::iterator it = this->kernelsAndStreams.begin();
+				it != this->kernelsAndStreams.end(); ++it) {
+			kernels.push_back((*it).first); // extract all kernels from the {kernel,stream} pairs
+		}
+		//clear up the queue
+		this->kernelsAndStreams.clear();
+		this->memoryUsed = 0;
+		std::vector<boost::shared_ptr<AbstractElasticKernel> > comb; // the combination vector
+		std::vector<std::pair<std::vector<boost::shared_ptr<AbstractElasticKernel> >, double> > results; // the combination matrix along with scaling factor
+		this->generateKernelCombinations(0, 2, comb, kernels, results); // generate combinations of 2
 
-	for (std::vector<std::pair<boost::shared_ptr<AbstractElasticKernel>, cudaStream_t> >::iterator it = this->kernelsAndStreams.begin();
-			it != this->kernelsAndStreams.end(); ++it) {
-		kernels.push_back((*it).first); // extract all kernels from the {kernel,stream} pairs
-	}
-	//clear up the queue
-	this->kernelsAndStreams.clear();
-	this->memoryUsed = 0;
-	std::vector<boost::shared_ptr<AbstractElasticKernel> > comb; // the combination vector
-	std::vector<std::pair<std::vector<boost::shared_ptr<AbstractElasticKernel> >, double> > results; // the combination matrix along with scaling factor
-	this->generateKernelCombinations(0, 2, comb, kernels, results); // generate combinations of 2
+		std::vector<boost::shared_ptr<AbstractElasticKernel> > extracted = extractKernelSequenceWithMinModification(results); // extract the kernels with least modification and max concurency
 
-	std::vector<boost::shared_ptr<AbstractElasticKernel> > extracted = extractKernelSequenceWithMinModification(results); // extract the kernels with least modification and max concurency
-
-	for (std::vector<boost::shared_ptr<AbstractElasticKernel> >::const_iterator iter = extracted.begin(); iter != extracted.end(); ++iter) {
-		// add kernels back to the queue
-		this->addKernel((*iter));
+		for (std::vector<boost::shared_ptr<AbstractElasticKernel> >::const_iterator iter = extracted.begin(); iter != extracted.end(); ++iter) {
+			// add kernels back to the queue
+			this->addKernel((*iter));
+		}
 	}
 
 }
